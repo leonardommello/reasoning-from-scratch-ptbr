@@ -1,33 +1,33 @@
-# Python Setup Recommendations
+# Recomendações de configuração do Python
 
-The code in this book is largely self-contained, and I have made an effort to minimize external dependencies. However, to keep the book accessible, readable, and well under 2000 pages, a few Python packages are necessary.
+O código deste livro é em grande parte autocontido, e me esforcei para minimizar as dependências externas. No entanto, para manter o livro acessível, legível e bem abaixo de 2000 páginas, alguns pacotes Python são necessários.
 
-This section introduces two beginner-friendly methods for installing the required packages so you can run the code examples. 
+Esta seção apresenta dois métodos amigáveis para iniciantes instalarem os pacotes necessários, para que você consiga rodar os exemplos de código.
 
-There are, of course, many other ways to install and manage Python packages. If you are an experienced Python user and already have your own setup or preferences, feel free to skip this section.
+Existem, claro, muitas outras formas de instalar e gerenciar pacotes Python. Se você é uma pessoa experiente em Python e já tem sua própria configuração ou preferências, sinta-se à vontade para pular esta seção.
 
-If neither of the two options below works for you, please do not hesitate to reach out, for example, by opening a [Discussion](https://github.com/rasbt/reasoning-from-scratch/discussions).
+Se nenhuma das duas opções abaixo funcionar para você, não hesite em entrar em contato, por exemplo, abrindo uma [Discussion](https://github.com/rasbt/reasoning-from-scratch/discussions).
 
 &nbsp;
-## Option 1: Using `pip` (built-in, works everywhere)
+## Opção 1: usar `pip` (embutido, funciona em qualquer lugar)
 
-If you are using a recent version of Python already, you can install packages using the built-in `pip` installer. 
+Se você já usa uma versão recente do Python, pode instalar pacotes usando o instalador `pip`, que já vem embutido.
 
-I used Python 3.12 for this book. However, newer versions like Python 3.13 and 3.14, as well as older versions like 3.11 and 3.10, will also work fine as long as they are supported by PyTorch. You can check your Python version by running:
+Usei Python 3.12 para este livro. No entanto, versões mais novas, como Python 3.13 e 3.14, assim como versões mais antigas, como 3.11 e 3.10, também funcionam bem, desde que sejam suportadas pelo PyTorch. Você pode checar sua versão do Python rodando:
 
 ```bash
 python --version
 ```
 
-If you are using Python 3.9 or older, consider installing the latest from [python.org](https://www.python.org/downloads/) or using a tool like [`pyenv`](https://github.com/pyenv/pyenv) to manage versions. However, if you are installing a new Python version, please make sure that it is supported by PyTorch by checking the recommendation on the [official PyTorch website](https://pytorch.org/get-started/locally/). PyTorch typically lags a few months behind the latest Python release, so newly released Python versions are not supported or recommended immediately.
+Se você usa Python 3.9 ou mais antigo, considere instalar a versão mais recente pelo [python.org](https://www.python.org/downloads/) ou usar uma ferramenta como o [`pyenv`](https://github.com/pyenv/pyenv) para gerenciar versões. No entanto, se você estiver instalando uma nova versão do Python, certifique-se de que ela seja suportada pelo PyTorch, checando a recomendação no [site oficial do PyTorch](https://pytorch.org/get-started/locally/). O PyTorch normalmente fica alguns meses atrás do lançamento mais recente do Python, então versões do Python recém-lançadas não são suportadas nem recomendadas de imediato.
 
-To install new packages, as needed, (for example, PyTorch and Jupyter Lab), run:
+Para instalar novos pacotes, conforme necessário (por exemplo, PyTorch e Jupyter Lab), rode:
 
 ```bash
 pip install torch jupyterlab
 ```
 
-Alternatively, you can install all required Python package used in this book all once via the [`requirements.txt`](https://github.com/rasbt/reasoning-from-scratch/blob/main/requirements.txt) file:
+Como alternativa, você pode instalar de uma vez todos os pacotes Python necessários usados neste livro, pelo arquivo [`requirements.txt`](https://github.com/rasbt/reasoning-from-scratch/blob/main/requirements.txt):
 
 ```bash
 pip install -r https://raw.githubusercontent.com/rasbt/reasoning-from-scratch/refs/heads/main/requirements.txt
@@ -35,19 +35,19 @@ pip install -r https://raw.githubusercontent.com/rasbt/reasoning-from-scratch/re
 
 
 &nbsp;
-## Option 2: Use `uv` (faster and widely recommended)
+## Opção 2: usar `uv` (mais rápido e amplamente recomendado)
 
-While `pip` remains the classic and official way to install Python packages, [`uv`](https://github.com/astral-sh/uv) is a modern and widely recommended Python package manager that automatically:
+Embora o `pip` continue sendo a forma clássica e oficial de instalar pacotes Python, o [`uv`](https://github.com/astral-sh/uv) é um gerenciador de pacotes Python moderno e amplamente recomendado, que automaticamente:
 
-- Creates and manages a virtual environment
-- Installs packages quickly
-- Keeps a lockfile for reproducible installs
-- Supports `pip`-like commands
+- Cria e gerencia um ambiente virtual
+- Instala pacotes rapidamente
+- Mantém um lockfile para instalações reproduzíveis
+- Suporta comandos parecidos com os do `pip`
 
 &nbsp;
-### Installing `uv` and Python packages
+### Instalando o `uv` e os pacotes Python
 
-To install `uv`,  you can use the commands below (also see the official [Installation](https://docs.astral.sh/uv/getting-started/installation/) page for the latest recommendations).
+Para instalar o `uv`, você pode usar os comandos abaixo (veja também a página oficial de [instalação](https://docs.astral.sh/uv/getting-started/installation/) para as recomendações mais recentes).
 
 &nbsp;
 **macOS / Linux:**
@@ -63,20 +63,20 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Once installed, you can install new Python packages similar to how you would do it via `pip` as described in the previous section, except that you replace `pip` with `uv pip`. For example
+Uma vez instalado, você pode instalar novos pacotes Python de forma parecida com o que faria pelo `pip`, como descrito na seção anterior, exceto que você troca `pip` por `uv pip`. Por exemplo:
 
 ```bash
 uv pip install torch jupyterlab
 ```
 
-However, if you are using `uv`, which I recommend and use myself, it's even better to use the native `uv` syntax instead of `uv pip`, as described below.
+No entanto, se você usa `uv`, o que eu recomendo e uso, é ainda melhor usar a sintaxe nativa do `uv` em vez do `uv pip`, como descrito abaixo.
 
 &nbsp;
-### Recommended `uv` workflow
+### Fluxo de trabalho recomendado com `uv`
 
-Instead of using `uv pip`, I recommend and use the native `uv` worklow.
+Em vez de usar `uv pip`, recomendo e uso o fluxo de trabalho nativo do `uv`.
 
-First, clone the GitHub repository to your local machine:
+Primeiro, clone o repositório do GitHub para a sua máquina local:
 
 
 
@@ -84,42 +84,42 @@ First, clone the GitHub repository to your local machine:
 git clone https://github.com/rasbt/reasoning-from-scratch.git
 ```
 
-Next, navigate into this folder, e.g., on Linux and MacOS:
+Em seguida, navegue até essa pasta, por exemplo, no Linux e no macOS:
 
 ```bash
 cd reasoning-from-scratch
 ```
 
-Then, since this folder contains a `pyproject.toml` file and a `.python-version` file, you are already good to go: `uv` will automatically create a (by default invisible) virtual environment folder (`.venv`) for this `reasoning-from-scratch` project into which it installs all the dependencies the first time you run a script or open Jupyter Lab.
+Então, como essa pasta contém um arquivo `pyproject.toml` e um arquivo `.python-version`, você já está pronto: o `uv` criará automaticamente uma pasta de ambiente virtual (invisível por padrão, `.venv`) para este projeto `reasoning-from-scratch`, na qual instala todas as dependências na primeira vez que você rodar um script ou abrir o Jupyter Lab.
 
-The `.python-version` file currently pins Python 3.13 for the local `uv` environment. This avoids accidentally selecting a Python version that is newer than the PyTorch releases tested with this project. If `uv` uses a different Python version, you can reset the local pin by running:
+O arquivo `.python-version` atualmente fixa o Python 3.13 para o ambiente local do `uv`. Isso evita selecionar acidentalmente uma versão do Python mais nova que as versões do PyTorch testadas com este projeto. Se o `uv` usar uma versão diferente do Python, você pode redefinir a fixação local rodando:
 
 ```bash
 uv python pin 3.13
 uv sync
 ```
 
-You will probably not need it but in general, you can install additional packages, which are not already part of the requirements listed in `pyproject.toml`, via `uv add`:
+Você provavelmente não vai precisar, mas, de forma geral, é possível instalar pacotes adicionais que ainda não fazem parte dos requisitos listados no `pyproject.toml`, via `uv add`:
 
 
 ```bash
 uv add llms_from_scratch
 ```
 
-The above command will then add the package to the virtual environment and `pyproject.toml` file.
+O comando acima então adiciona o pacote ao ambiente virtual e ao arquivo `pyproject.toml`.
 
 &nbsp;
-### Running code via `uv`
+### Rodando código pelo `uv`
 
-This section describes the `uv` commands to run Jupyter Lab and Python scripts.
+Esta seção descreve os comandos do `uv` para rodar o Jupyter Lab e scripts Python.
 
-To open Jupyter Lab, execute:
+Para abrir o Jupyter Lab, execute:
 
 ```bash
 uv run jupyter lab
 ```
 
-Python scripts can be run via:
+Scripts Python podem ser rodados via:
 
 ```bash
 uv run python script.py
@@ -128,15 +128,15 @@ uv run python script.py
 
 
 
-> **Advanced usage:** This section describes a simple way to use `uv` that looks familiar to `pip` users. If you are interested in more advanced usage, please see [this document](https://github.com/rasbt/LLMs-from-scratch/tree/main/setup/01_optional-python-setup-preferences) for more explicit instructions on managing virtual environments in `uv`. 
-> If you are a macOS or Linux user and prefer the native uv commands, please refer to [this tutorial](https://github.com/rasbt/LLMs-from-scratch/blob/main/setup/01_optional-python-setup-preferences/native-uv.md). I also recommend checking the [official uv documentation](https://docs.astral.sh/uv/) for additional information.
+> **Uso avançado:** esta seção descreve uma forma simples de usar o `uv`, familiar para quem usa `pip`. Se você tem interesse em um uso mais avançado, veja [este documento](https://github.com/rasbt/LLMs-from-scratch/tree/main/setup/01_optional-python-setup-preferences) para instruções mais explícitas sobre gerenciar ambientes virtuais no `uv`.
+> Se você usa macOS ou Linux e prefere os comandos nativos do uv, consulte [este tutorial](https://github.com/rasbt/LLMs-from-scratch/blob/main/setup/01_optional-python-setup-preferences/native-uv.md). Também recomendo consultar a [documentação oficial do uv](https://docs.astral.sh/uv/) para informações adicionais.
 
 
 
 &nbsp;
-### JupyterLab tips
+### Dicas de JupyterLab
 
-If you are viewing the notebook code in JupyterLab rather than VSCode, note that JupyterLab (in its default setting) has had scrolling bugs in recent versions. My recommendation is to go to Settings -> Settings Editor and change the "Windowing mode" to "none" (as illustrated below), which seems to address the issue.
+Se você está visualizando o código dos notebooks no JupyterLab em vez do VSCode, note que o JupyterLab (na configuração padrão) apresentou bugs de rolagem em versões recentes. Minha recomendação é ir em Settings -> Settings Editor e mudar o "Windowing mode" para "none" (como ilustrado abaixo), o que parece resolver o problema.
 
 
 ![Jupyter Glitch 1](https://sebastianraschka.com/images/reasoning-from-scratch-images/bonus/setup/jupyter_glitching_1.webp)
@@ -146,6 +146,6 @@ If you are viewing the notebook code in JupyterLab rather than VSCode, note that
 ![Jupyter Glitch 2](https://sebastianraschka.com/images/reasoning-from-scratch-images/bonus/setup/jupyter_glitching_2.webp)
 
 &nbsp;
-## Questions?
+## Dúvidas?
 
-If you have any questions, please don't hesitate to reach out via the [Discussions](https://github.com/rasbt/reasoning-from-scratch/discussions) forum in this GitHub repository.
+Se você tiver qualquer dúvida, não hesite em entrar em contato pelo fórum de [Discussions](https://github.com/rasbt/reasoning-from-scratch/discussions) neste repositório do GitHub.
