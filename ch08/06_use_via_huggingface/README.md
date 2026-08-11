@@ -1,41 +1,41 @@
-# Chapter 8 Bonus Material: Use Qwen3 with Hugging Face
+# Material complementar do capítulo 8: usar o Qwen3 com Hugging Face
 
-This folder contains two ways to use the scratch [`Qwen3Model`](../../reasoning_from_scratch/qwen3.py) and compatible `.pth` checkpoints from this repository with Hugging Face `transformers`.
+Esta pasta contém duas formas de usar o [`Qwen3Model`](../../reasoning_from_scratch/qwen3.py) feito do zero e os checkpoints `.pth` compatíveis deste repositório com o `transformers` do Hugging Face.
 
-Both approaches let you use Hugging Face-style inference and training. The difference is whether you want a reusable Hugging Face model directory or a lighter local wrapper around the existing PyTorch model.
+Ambas as abordagens permitem inferência e treinamento no estilo Hugging Face. A diferença está em querer um diretório de modelo Hugging Face reutilizável ou um wrapper local mais leve em torno do modelo PyTorch existente.
 
 &nbsp;
-## Approaches
+## Abordagens
 
 
 &nbsp;
 ### 1) `wrapper_approach`
 
-The [./wrapper_approach](./wrapper_approach) keeps the model as a local `.pth` file and wraps `Qwen3Model` in a thin local `PreTrainedModel` so it can work with parts of the Hugging Face API.
+A [./wrapper_approach](./wrapper_approach) mantém o modelo como um arquivo `.pth` local e encapsula o `Qwen3Model` em um `PreTrainedModel` local e fino, para que funcione com partes da API do Hugging Face.
 
-Use this approach if you want:
+Use esta abordagem se você quer:
 
-- the smallest amount of extra code
-- local experimentation inside this repository
-- `model.generate(...)` and `transformers.Trainer` without an export step
-- to load the base model or chapter 6-8 checkpoints directly from `.pth`
+- a menor quantidade de código extra
+- experimentação local dentro deste repositório
+- `model.generate(...)` e `transformers.Trainer` sem uma etapa de exportação
+- carregar o modelo base ou os checkpoints dos capítulos 6 a 8 diretamente do `.pth`
 
 
 &nbsp;
 ### 2) `export_approach`
 
-The [./export_approach](./export_approach) converts the scratch Qwen3 weights or a compatible checkpoint into a Hugging Face-compatible model folder.
+A [./export_approach](./export_approach) converte os pesos do Qwen3 feito do zero, ou um checkpoint compatível, em uma pasta de modelo compatível com o Hugging Face.
 
-Use this approach if you want:
+Use esta abordagem se você quer:
 
-- a saved model directory with `config.json`, tokenizer files, and weights
-- `AutoConfig`, `AutoTokenizer`, and `AutoModelForCausalLM`
-- a workflow that is closer to how Hugging Face models are usually packaged
+- um diretório de modelo salvo, com `config.json`, arquivos de tokenizer e pesos
+- `AutoConfig`, `AutoTokenizer` e `AutoModelForCausalLM`
+- um fluxo de trabalho mais próximo de como os modelos Hugging Face costumam ser empacotados
 
 
 
 &nbsp;
-## Which To Use?
+## Qual usar?
 
-- Choose [wrapper_approach](wrapper_approach) for learning purposes and if the goal is a lighter local integration with `transformers`.
-- Choose [export_approach](export_approach) if the goal is a creating a Hugging Face model package and optimizing computational performance.
+- Escolha a [wrapper_approach](wrapper_approach) para fins de aprendizado e se o objetivo for uma integração local mais leve com o `transformers`.
+- Escolha a [export_approach](export_approach) se o objetivo for criar um pacote de modelo Hugging Face e otimizar o desempenho computacional.

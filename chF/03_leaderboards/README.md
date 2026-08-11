@@ -1,9 +1,9 @@
 
-# Leaderboard Rankings
+# Rankings de leaderboard
 
-This bonus material implements two different ways to construct LM Arena (formerly Chatbot Arena) style leaderboards from pairwise comparisons.
+Este material complementar implementa duas formas diferentes de construir leaderboards no estilo do LM Arena (antigo Chatbot Arena) a partir de comparações par a par.
 
-Both implementations take in a list of pairwise preferences (left: winner, right: loser) from a json file via the `--path` argument. Here's an excerpt of the provided [votes.json](votes.json) file:
+Ambas as implementações recebem uma lista de preferências par a par (esquerda: vencedor, direita: perdedor) de um arquivo json, pelo argumento `--path`. Aqui está um trecho do arquivo [votes.json](votes.json) fornecido:
 
 ```json
 [
@@ -21,15 +21,15 @@ Both implementations take in a list of pairwise preferences (left: winner, right
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
 &nbsp;
-## Method 1: Elo ratings
+## Método 1: ratings Elo
 
-- Implements the popular Elo rating method (inspired by chess rankings) that was originally used by LM Arena
-- See the [main notebook](../01_main-chapter-code/chF_main.ipynb) for details
+- Implementa o popular método de rating Elo (inspirado nos rankings de xadrez), originalmente usado pelo LM Arena
+- Veja o [notebook principal](../01_main-chapter-code/chF_main.ipynb) para detalhes
 
 ```bash
 ➜  03_leaderboards git:(main) ✗ uv run 1_elo_leaderboard.py --path votes.json
@@ -48,11 +48,11 @@ Leaderboard (Elo)
 
 
 &nbsp;
-## Method 2: Bradley-Terry model
+## Método 2: modelo de Bradley-Terry
 
-- Implements a [Bradley-Terry model](https://en.wikipedia.org/wiki/Bradley–Terry_model), similar to the new LM Arena leaderboard as described in the official paper ([Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference](https://arxiv.org/abs/2403.04132))
-- Like on the LM Arena leaderboard, the scores are re-scaled to be similar to the original Elo scores
-- The code here uses the Adam optimizer from PyTorch to fit the model (for better code familiarity and readability)
+- Implementa um [modelo de Bradley-Terry](https://en.wikipedia.org/wiki/Bradley–Terry_model), parecido com o novo leaderboard do LM Arena, conforme descrito no artigo oficial ([Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference](https://arxiv.org/abs/2403.04132))
+- Assim como no leaderboard do LM Arena, os scores são reescalados para ficarem parecidos com os scores Elo originais
+- O código aqui usa o otimizador Adam do PyTorch para ajustar o modelo (por familiaridade e legibilidade)
 
 
 

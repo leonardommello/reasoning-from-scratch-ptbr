@@ -1,17 +1,17 @@
-# Chapter 3: Advanced Parser (Bonus Material)
+# Capítulo 3: Parser avançado (material complementar)
 
-This folder contains the parser experiment from [issue #133](https://github.com/rasbt/reasoning-from-scratch/issues/133), where a hybrid LaTeX parser was proposed to handle edge cases that the current chapter parser may miss.
+Esta pasta contém o experimento de parser da [issue #133](https://github.com/rasbt/reasoning-from-scratch/issues/133), na qual foi proposto um parser híbrido de LaTeX para lidar com casos extremos que o parser atual do capítulo pode não cobrir.
 
 
 
 &nbsp;
 
-## Files
+## Arquivos
 
-- [compare_with_current_parser.ipynb](compare_with_current_parser.ipynb): notebook with usage examples
-- [math500_gpt_answers.json](math500_gpt_answers.json): MATH-500 examples with LLM answers, used for a section in the notebook above
-- [gen_llm_answers.py](gen_llm_answers.py): Convenience script to get boxed answers from the Qwen3 model in json format
-- [evaluate_math500_advanced.py](evaluate_math500_advanced.py): Same as the chapter 3 LLM evaluation script [evaluate_math500.py](../02_math500-verifier-scripts/evaluate_math500.py) but supports `--hybrid_parser` as an additional argument to use the alternative hybrid parser, for example,
+- [compare_with_current_parser.ipynb](compare_with_current_parser.ipynb): notebook com exemplos de uso
+- [math500_gpt_answers.json](math500_gpt_answers.json): exemplos do MATH-500 com respostas de LLM, usados em uma seção do notebook acima
+- [gen_llm_answers.py](gen_llm_answers.py): script de conveniência para obter respostas em box do modelo Qwen3, em formato json
+- [evaluate_math500_advanced.py](evaluate_math500_advanced.py): igual ao script de avaliação de LLM do capítulo 3, [evaluate_math500.py](../02_math500-verifier-scripts/evaluate_math500.py), mas suporta `--hybrid_parser` como argumento adicional, para usar o parser híbrido alternativo, por exemplo:
 
 ```python
 uv run evaluate_math500_advanced.py --dataset_size 500 --hybrid_parser
@@ -20,37 +20,37 @@ uv run evaluate_math500_advanced.py --dataset_size 500 --hybrid_parser
 
 
 &nbsp;
-## How This Differs From The Chapter 3 Parser
+## Como isso difere do parser do capítulo 3
 evaluate_math500_advanced.py
-The chapter parser in [reasoning_from_scratch/ch03.py](../../reasoning_from_scratch/ch03.py) is designed to stay compact and teachable:
+O parser do capítulo, em [reasoning_from_scratch/ch03.py](../../reasoning_from_scratch/ch03.py), foi projetado para se manter compacto e didático:
 
-- It focuses on lightweight normalization plus symbolic equivalence checks
-- It mainly treats answers as arithmetic/symbolic expressions
+- Foca em normalização leve, mais checagens de equivalência simbólica
+- Trata as respostas principalmente como expressões aritméticas/simbólicas
 
-The hybrid parser in this folder (`latex_normalizer_hybrid.py`) is pattern-first and broader:
+O parser híbrido desta pasta (`latex_normalizer_hybrid.py`) parte de padrões e é mais abrangente:
 
-- It recognizes answer formats before fallback parsing.
-- It adds support for intervals, unions, equations, matrices, set notation, membership (`\\in`), and `\\pm`
-- It preserves important edge cases better, such as base-subscript answers (`52_8`) and text casing (`\\text{Evelyn}`)
+- Reconhece formatos de resposta antes de recorrer ao parsing de fallback.
+- Adiciona suporte a intervalos, uniões, equações, matrizes, notação de conjuntos, pertencimento (`\\in`) e `\\pm`
+- Preserva melhor casos extremos importantes, como respostas com subscrito de base (`52_8`) e caixa de texto (`\\text{Evelyn}`)
 
-Examples where behavior differs:
+Exemplos em que o comportamento difere:
 
-- `52_8` -> chapter path often resolves to `528`; hybrid keeps `52_8`
-- `11,\\! 111,\\! 111,\\! 100` -> chapter path can become a tuple; hybrid normalizes to `11111111100`
-- `(0,9) \\cup (9,36)` -> chapter path usually remains text; hybrid returns a symbolic union
+- `52_8` -> o caminho do capítulo costuma resolver para `528`; o híbrido mantém `52_8`
+- `11,\\! 111,\\! 111,\\! 100` -> o caminho do capítulo pode virar uma tupla; o híbrido normaliza para `11111111100`
+- `(0,9) \\cup (9,36)` -> o caminho do capítulo normalmente permanece como texto; o híbrido retorna uma união simbólica
 
-Tradeoffs:
+Trade-offs:
 
-- Chapter parser: simpler, faster, and easier to interpret
-- Hybrid parser: better coverage on LaTeX edge cases, but more rules and complexity; also adds SymPy LaTeX backend dependencies
+- Parser do capítulo: mais simples, mais rápido e mais fácil de interpretar
+- Parser híbrido: melhor cobertura de casos extremos de LaTeX, mas com mais regras e complexidade; também acrescenta dependências do backend LaTeX do SymPy
 
 &nbsp;
-## Usage
+## Uso
 
-You can import the hybrid parser directly from the package:
+Você pode importar o parser híbrido diretamente do pacote:
 
 ```python
 from reasoning_from_scratch.bonus.parser import normalize_text_hybrid, sympy_parser_hybrid
 ```
 
-See [compare_with_current_parser.ipynb](compare_with_current_parser.ipynb) for more detailed usage examples.
+Veja o [compare_with_current_parser.ipynb](compare_with_current_parser.ipynb) para exemplos de uso mais detalhados.
