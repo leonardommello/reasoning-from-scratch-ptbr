@@ -1,14 +1,14 @@
-# Chapter 4: Improving Reasoning with Inference-Time Scaling
+# Capítulo 4: Melhorando o raciocínio com inference-time scaling
 
 
 &nbsp;
-## Bonus materials
+## Materiais complementares
 
-- [cot_prompting_math500.py](cot_prompting_math500.py): standalone script to evaluate models with chain-of-thought prompting on the MATH-500 dataset
-- [self_consistency_math500.py](self_consistency_math500.py): standalone script to evaluate models with self-consistency sampling on the MATH-500 dataset
-- [run_all_experiments_math500.sh](run_all_experiments_math500.sh): A convenience bash script that runs all experiments (rows 4 to 12) listed in this READMe below
+- [cot_prompting_math500.py](cot_prompting_math500.py): script autônomo para avaliar modelos com prompting de chain-of-thought no dataset MATH-500
+- [self_consistency_math500.py](self_consistency_math500.py): script autônomo para avaliar modelos com amostragem por self-consistency no dataset MATH-500
+- [run_all_experiments_math500.sh](run_all_experiments_math500.sh): um script bash de conveniência que roda todos os experimentos (linhas 4 a 12) listados neste README abaixo
 
-Both evaluation scripts import functionality from the [`reasoning_from_scratch`](../../reasoning_from_scratch) package to avoid code duplication. (See [chapter 2 setup instructions](../../ch02/02_setup-tips/python-instructions.md) for installation details.)
+Ambos os scripts de avaliação importam funcionalidades do pacote [`reasoning_from_scratch`](../../reasoning_from_scratch) para evitar duplicação de código. (Veja as [instruções de configuração do capítulo 2](../../ch02/02_setup-tips/python-instructions.md) para detalhes de instalação.)
 
 
 
@@ -16,7 +16,7 @@ Both evaluation scripts import functionality from the [`reasoning_from_scratch`]
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
@@ -24,9 +24,9 @@ Both evaluation scripts import functionality from the [`reasoning_from_scratch`]
 
 &nbsp;
 
-## Chain-of-thought prompting
+## Prompting com chain-of-thought
 
-The [`cot_prompting_math500.py`](self_consistency_math500.py) script implements the chain-of-thought prompting method from chapter 4.
+O script [`cot_prompting_math500.py`](self_consistency_math500.py) implementa o método de prompting com chain-of-thought do capítulo 4.
 
 &nbsp;
 
@@ -34,17 +34,17 @@ The [`cot_prompting_math500.py`](self_consistency_math500.py) script implements 
 
 &nbsp;
 
-The table below compares this approach (row 3) with the baselines from chapter 3:
+A tabela abaixo compara esta abordagem (linha 3) com os baselines do capítulo 3:
 
-|    | Method                                       | Model     | Accuracy | Time       |
+|    | Método                                       | Modelo    | Acurácia | Tempo      |
 |----|----------------------------------------------|-----------|----------|------------|
-| 1  | Baseline (chapter 3), greedy decoding        | Base      | 15.2%    | 10.1 min   |
-| 2  | Baseline (chapter 3), greedy decoding        | Reasoning | 48.2%    | 182.1 min  |
-| 3  | Chain-of-thought prompting ("CoT")           | Base      | 40.6%    | 84.5 min   |
+| 1  | Baseline (capítulo 3), greedy decoding       | Base      | 15,2%    | 10,1 min   |
+| 2  | Baseline (capítulo 3), greedy decoding       | Reasoning | 48,2%    | 182,1 min  |
+| 3  | Prompting com chain-of-thought ("CoT")       | Base      | 40,6%    | 84,5 min   |
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+Os valores de acurácia e os tempos de execução mostrados na tabela foram calculados sobre todas as 500 amostras do conjunto de teste MATH-500, usando uma GPU "cuda" (DGX Spark).
 
-To run the experiment in row one, use:
+Para rodar o experimento da primeira linha, use:
 
 ```bash
 python cot_prompting_math500.py \
@@ -52,7 +52,7 @@ python cot_prompting_math500.py \
 --dataset_size 500
 ```
 
-Or, with `uv:`
+Ou, com `uv:`
 
 
 ```bash
@@ -61,16 +61,16 @@ uv run cot_prompting_math500.py \
 --dataset_size 500
 ```
 
-For additional options, use the `--help` flag.
+Para opções adicionais, use a flag `--help`.
 
 
 
 &nbsp;
-## Self-consistency sampling
+## Amostragem por self-consistency
 
-The [`self_consistency_math500.py`](self_consistency_math500.py) script implements the sampling method from chapter 4.
+O script [`self_consistency_math500.py`](self_consistency_math500.py) implementa o método de amostragem do capítulo 4.
 
-(Optionally, there is a [`self_consistency_math500_batched.py`](self_consistency_math500_batched.py) variant, which executes all `--num_samples` as a batch for faster processing. Note that this requires more compute memory though.)
+(Opcionalmente, há a variante [`self_consistency_math500_batched.py`](self_consistency_math500_batched.py), que executa todas as `--num_samples` como um batch, para processamento mais rápido. Note, porém, que isso exige mais memória de computação.)
 
 &nbsp;
 
@@ -78,28 +78,28 @@ The [`self_consistency_math500.py`](self_consistency_math500.py) script implemen
 
 &nbsp;
 
-The table below compares this approach (row 4-12) with the baselines from chapter 3 (rows 1-2):
+A tabela abaixo compara esta abordagem (linhas 4 a 12) com os baselines do capítulo 3 (linhas 1 e 2):
 
-|      | Method                                    | Model     | Accuracy | Time      |
+|      | Método                                    | Modelo    | Acurácia | Tempo     |
 | ---- | ----------------------------------------- | --------- | -------- | --------- |
-| 1    | Baseline (chapter 3), greedy decoding     | Base      | 15.2%    | 10.1 min  |
-| 2    | Baseline (chapter 3), greedy decoding     | Reasoning | 48.2%    | 182.1 min |
-| 3    | Chain-of-thought prompting ("CoT")        | Base      | 40.6%    | 84.5 min  |
-| 4    | Temperature and top-p ("Top-p")           | Base      | 17.8%    | 30.7 min  |
-| 5    | "Top-p" + Self-consistency (n=3)          | Base      | 29.6%    | 97.6 min  |
-| 6    | "Top-p" + Self-consistency (n=5)          | Base      | 27.8%    | 116.8 min |
-| 7    | "Top-p" + Self-consistency (n=10)         | Base      | 31.6%    | 300.4 min |
-| 8    | "Top-p" + "CoT"                           | Base      | 33.4%    | 129.2 min |
-| 9    | Self-consistency (n=3) + "Top-p" + "CoT"  | Base      | 42.2%    | 211.6 min |
-| 10   | Self-consistency (n=5) + "Top-p" + "CoT"  | Base      | 48.0%    | 452.9 min |
-| 11   | Self-consistency (n=10) + "Top-p" + "CoT" | Base      | 52.0%    | 862.6 min |
-| 12   | Self-consistency (n=3) + "Top-p" + "CoT"  | Reasoning | 55.2%    | 544.4 min |
+| 1    | Baseline (capítulo 3), greedy decoding    | Base      | 15,2%    | 10,1 min  |
+| 2    | Baseline (capítulo 3), greedy decoding    | Reasoning | 48,2%    | 182,1 min |
+| 3    | Prompting com chain-of-thought ("CoT")    | Base      | 40,6%    | 84,5 min  |
+| 4    | Temperature e top-p ("Top-p")             | Base      | 17,8%    | 30,7 min  |
+| 5    | "Top-p" + self-consistency (n=3)          | Base      | 29,6%    | 97,6 min  |
+| 6    | "Top-p" + self-consistency (n=5)          | Base      | 27,8%    | 116,8 min |
+| 7    | "Top-p" + self-consistency (n=10)         | Base      | 31,6%    | 300,4 min |
+| 8    | "Top-p" + "CoT"                           | Base      | 33,4%    | 129,2 min |
+| 9    | Self-consistency (n=3) + "Top-p" + "CoT"  | Base      | 42,2%    | 211,6 min |
+| 10   | Self-consistency (n=5) + "Top-p" + "CoT"  | Base      | 48,0%    | 452,9 min |
+| 11   | Self-consistency (n=10) + "Top-p" + "CoT" | Base      | 52,0%    | 862,6 min |
+| 12   | Self-consistency (n=3) + "Top-p" + "CoT"  | Reasoning | 55,2%    | 544,4 min |
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+Os valores de acurácia e os tempos de execução mostrados na tabela foram calculados sobre todas as 500 amostras do conjunto de teste MATH-500, usando uma GPU "cuda" (DGX Spark).
 
-The following codes give instructions on how to run the self-consistency experiments in rows 4-12 (replace `uv run` with `python` if you are not a `uv` user).
+Os códigos a seguir dão instruções de como rodar os experimentos de self-consistency das linhas 4 a 12 (troque `uv run` por `python` se você não usa `uv`).
 
-**Row 4:**
+**Linha 4:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -110,7 +110,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 5:**
+**Linha 5:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -121,7 +121,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 6:**
+**Linha 6:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -132,7 +132,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 7:**
+**Linha 7:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -143,7 +143,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 8:**
+**Linha 8:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -155,7 +155,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 9:**
+**Linha 9:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -167,7 +167,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 10:**
+**Linha 10:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -179,7 +179,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 11:**
+**Linha 11:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -191,7 +191,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 12:**
+**Linha 12:**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -204,5 +204,5 @@ uv run self_consistency_math500.py \
 ```
 
 
-For additional options, use the `--help` flag.
+Para opções adicionais, use a flag `--help`.
 
