@@ -45,19 +45,34 @@ tradução não oficial, nota de licença e link para compra do livro.
 pasta `/docs`. O site fica em
 `https://leonardommello.github.io/reasoning-from-scratch-ptbr/`.
 
-## Etapa 4 — READMEs de material complementar ⬜
+## Etapa 4 — READMEs de material complementar (6/19)
 
-Pendentes (~20). São documentos de bônus, não bloqueiam o uso do repositório:
+Concluídos ✅
 
-`ch02/03_optimized-LLM` · `ch02/04_torch-compile-windows` · `ch02/05_use_model` ·
-`ch02/02_setup-tips/python-instructions.md` · `ch03/02_math500-verifier-scripts` ·
-`ch03/03_advanced-parser` · `ch04/02_math500-inference-scaling-scripts` ·
-`ch05/02_math500-more-inference-scaling-scripts` · `ch06/02_rlvr_grpo_scripts_intro` ·
-`ch07/03_rlvr_grpo_scripts_advanced` · `ch07/04_download_trainining_checkpoints` ·
-`ch08/02_generate_distillation_data` (+ `other_providers/minimax`) ·
-`ch08/04_train_with_distillation` · `ch08/05_download_training_checkpoints` ·
-`ch08/06_use_via_huggingface` (+ `export_approach`, `wrapper_approach`) ·
-`chF/02_mmlu` · `chF/03_leaderboards` · `chF/04_llm-judge` · `chG/01_main-chapter-code`
+`ch02/04_torch-compile-windows` · `ch03/03_advanced-parser` ·
+`ch07/03_rlvr_grpo_scripts_advanced` · `ch08/06_use_via_huggingface` ·
+`chF/03_leaderboards` · `chG/01_main-chapter-code`
+
+Pendentes ⬜ (~101k chars). São documentos de bônus — descrevem como rodar
+scripts e baixar checkpoints. Não bloqueiam o uso do repositório:
+
+| Arquivo | Bytes |
+|---|---|
+| `ch08/02_generate_distillation_data/README.md` | 15.345 |
+| `ch05/02_math500-more-inference-scaling-scripts/README.md` | 10.211 |
+| `chF/02_mmlu/README.md` | 9.800 |
+| `ch06/02_rlvr_grpo_scripts_intro/README.md` | 9.175 |
+| `ch08/04_train_with_distillation/README.md` | 8.905 |
+| `ch02/05_use_model/README.md` | 8.611 |
+| `ch02/03_optimized-LLM/README.md` | 7.591 |
+| `ch02/02_setup-tips/python-instructions.md` | 6.696 |
+| `ch04/02_math500-inference-scaling-scripts/README.md` | 6.465 |
+| `ch07/04_download_trainining_checkpoints/README.md` | 4.971 |
+| `chF/04_llm-judge/README.md` | 4.603 |
+| `ch03/02_math500-verifier-scripts/README.md` | 4.597 |
+| `ch08/05_download_training_checkpoints/README.md` | 3.955 |
+| `ch08/06_use_via_huggingface/{export,wrapper}_approach/README.md` | 12.385 |
+| `ch08/02_generate_distillation_data/other_providers/minimax/README.md` | 3.067 |
 
 ## Etapa 5 — comentários e docstrings `.py` ⬜
 
