@@ -1,8 +1,8 @@
-# Appendix G: Building a Chat Interface
+# Apêndice G: Construindo uma interface de chat
 
 
 
-This folder contains code for running a ChatGPT-like user interface to interact with the LLMs used and/or developed in this book, as shown below.
+Esta pasta contém o código para rodar uma interface de usuário no estilo do ChatGPT, para interagir com os LLMs usados e/ou desenvolvidos neste livro, como mostrado abaixo.
 
 
 
@@ -10,18 +10,18 @@ This folder contains code for running a ChatGPT-like user interface to interact 
 
 
 
-To implement this user interface, we use the open-source [Chainlit Python package](https://github.com/Chainlit/chainlit).
+Para implementar essa interface de usuário, usamos o pacote Python de código aberto [Chainlit](https://github.com/Chainlit/chainlit).
 
 &nbsp;
-## Step 1: Install dependencies
+## Passo 1: instalar as dependências
 
-First, we install the `chainlit` package and dependency:
+Primeiro, instalamos o pacote `chainlit` e sua dependência:
 
 ```bash
 pip install chainlit
 ```
 
-Or, if you are using `uv`:
+Ou, se você usa `uv`:
 
 ```bash
 uv add chainlit
@@ -31,42 +31,42 @@ uv add chainlit
 
 &nbsp;
 
-## Step 2: Run `app` code
+## Passo 2: rodar o código do `app`
 
-This folder contains 2 files:
+Esta pasta contém 2 arquivos:
 
-1. [`qwen3_chat_interface.py`](qwen3_chat_interface.py): This file loads and uses the Qwen3 0.6B model in thinking mode.
-2. [`qwen3_chat_interface_multiturn.py`](qwen3_chat_interface_multiturn.py): The same as above, but configured to remember the message history.
+1. [`qwen3_chat_interface.py`](qwen3_chat_interface.py): este arquivo carrega e usa o modelo Qwen3 0.6B em modo de thinking.
+2. [`qwen3_chat_interface_multiturn.py`](qwen3_chat_interface_multiturn.py): igual ao anterior, mas configurado para lembrar o histórico de mensagens.
 
-(Open and inspect these files to learn more.)
+(Abra e inspecione esses arquivos para saber mais.)
 
-Run one of the following commands from the terminal to start the UI server:
+Rode um dos comandos a seguir no terminal para iniciar o servidor da interface:
 
 ```bash
 chainlit run qwen3_chat_interface.py
 ```
 
-or, if you are using `uv`:
+ou, se você usa `uv`:
 
 ```bash
 uv run chainlit run qwen3_chat_interface.py
 ```
 
-Running one of the commands above should open a new browser tab where you can interact with the model. If the browser tab does not open automatically, inspect the terminal command and copy the local address into your browser address bar (usually, the address is `http://localhost:8000`).
+Rodar um dos comandos acima deve abrir uma nova aba do navegador, onde você pode interagir com o modelo. Se a aba não abrir automaticamente, inspecione o comando no terminal e copie o endereço local para a barra de endereços do navegador (normalmente, o endereço é `http://localhost:8000`).
 
-## Using a custom checkpoint
+## Usando um checkpoint personalizado
 
-Since `chainlit run ...` owns the command-line arguments, these scripts read a custom checkpoint path from the `CHECKPOINT_PATH` environment variable instead of `argparse`.
+Como o `chainlit run ...` é quem controla os argumentos de linha de comando, estes scripts leem o caminho de um checkpoint personalizado da variável de ambiente `CHECKPOINT_PATH`, em vez de usar `argparse`.
 
-Terminal example:
+Exemplo no terminal:
 
 ```bash
 CHECKPOINT_PATH=/absolute/path/to/qwen3-0.6B-distill-step06682-epoch1.pth \
 uv run chainlit run qwen3_chat_interface.py
 ```
 
-Notes:
+Notas:
 
-- Keep `WHICH_MODEL` in the script aligned with the tokenizer the checkpoint expects.
-- The chapter 8 checkpoints from [`ch08/05_download_training_checkpoints`](../../ch08/05_download_training_checkpoints) use the reasoning tokenizer, so use `WHICH_MODEL = "reasoning"`.
-- When `CHECKPOINT_PATH` is set, the script only downloads the tokenizer into `LOCAL_DIR`; it does not re-download the default model weights.
+- Mantenha o `WHICH_MODEL` do script alinhado com o tokenizer que o checkpoint espera.
+- Os checkpoints do capítulo 8, de [`ch08/05_download_training_checkpoints`](../../ch08/05_download_training_checkpoints), usam o tokenizer de raciocínio, então use `WHICH_MODEL = "reasoning"`.
+- Quando `CHECKPOINT_PATH` está definido, o script baixa apenas o tokenizer para o `LOCAL_DIR`; ele não baixa novamente os pesos padrão do modelo.
