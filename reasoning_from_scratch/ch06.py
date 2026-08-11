@@ -99,7 +99,7 @@ def sample_response(
 
 def reward_rlvr(answer_text, ground_truth):
     extracted = extract_final_candidate(
-        answer_text, fallback=None  # Require \boxed{}
+        answer_text, fallback=None  # Exige \boxed{}
     )
     if not extracted:
         return 0.0
@@ -134,7 +134,7 @@ def compute_grpo_loss(
     model.eval()
 
     for _ in range(num_rollouts):
-        # Stage 1: generate rollouts
+        # Estágio 1: gera os rollouts
         token_ids, prompt_len, text = sample_response(
             model=model,
             tokenizer=tokenizer,
@@ -144,10 +144,10 @@ def compute_grpo_loss(
             temperature=temperature,
             top_p=top_p,
         )
-        # Stage 2: compute rewards
+        # Estágio 2: calcula os rewards
         reward = reward_rlvr(text, example["answer"])
 
-        # Stage 4: compute logprobs
+        # Estágio 4: calcula os logprobs
         logp = sequence_logprob(model, token_ids, prompt_len)
 
         roll_logps.append(logp)
@@ -163,18 +163,18 @@ def compute_grpo_loss(
     if was_training:
         model.train()
 
-    # Stage 2: collect all rewards
+    # Estágio 2: coleta todos os rewards
     rewards = torch.tensor(roll_rewards, device=device)
 
-    # Stage 3: compute advantages
+    # Estágio 3: calcula os advantages
     advantages = (rewards - rewards.mean()) / (rewards.std() + 1e-4)
 
-    # Stage 4: collect all logprobs
+    # Estágio 4: coleta todos os logprobs
     logps = torch.stack(roll_logps)
 
-    # Stage 5: compute policy gradient loss
+    # Estágio 5: calcula a loss de policy gradient
     pg_loss = -(advantages.detach() * logps).mean()
-    loss = pg_loss  # In the next chapter we add a KL term here
+    loss = pg_loss  # No próximo capítulo, adicionamos um termo de KL aqui
 
     return {
         "loss": loss.item(),
@@ -237,8 +237,8 @@ def train_rlvr_grpo(
     if steps is None:
         steps = len(math_data)
 
-    # Stage 1: initialize optimize
-    # (the model was already initialized outside the function)
+    # Estágio 1: inicializa o otimizador
+    # (o modelo já foi inicializado fora da função)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
     model.train()
     current_step = 0
@@ -248,17 +248,17 @@ def train_rlvr_grpo(
         csv_log_path = f"train_rlvr_grpo_metrics_{timestamp}.csv"
     csv_log_path = Path(csv_log_path)
     try:
-        # Stage 2: Iterate over training steps
+        # Estágio 2: itera sobre os steps de treinamento
         for step in range(steps):
 
-            # Stage 3: Reset loss gradient
-            # (it's best practice to do this at the beginning of each step)
+            # Estágio 3: zera o gradiente da loss
+            # (é boa prática fazer isso no início de cada step)
             optimizer.zero_grad()
 
             current_step = step + 1
             example = math_data[step % len(math_data)]
 
-            # Stage 4: calculate GRPO loss
+            # Estágio 4: calcula a loss do GRPO
             stats = compute_grpo_loss(
                 model=model,
                 tokenizer=tokenizer,
@@ -270,16 +270,16 @@ def train_rlvr_grpo(
                 top_p=top_p,
             )
 
-            # Stage 5: Backward pass to calculate loss gradients
+            # Estágio 5: backward pass, para calcular os gradientes da loss
             stats["loss_tensor"].backward()
 
-            # Clip large gradients to improve training stability
+            # Limita gradientes grandes, para melhorar a estabilidade do treinamento
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
-            # Stage 6: Update model weights using loss gradients
+            # Estágio 6: atualiza os pesos do modelo usando os gradientes da loss
             optimizer.step()
 
-            # Stage 7: Collect rewards, losses, and response lengths
+            # Estágio 7: coleta rewards, losses e comprimentos de resposta
             reward_avg = torch.tensor(stats["rewards"]).mean().item()
             step_tokens = sum(sample["gen_len"] for sample in stats["samples"])
             avg_response_len = (
@@ -294,7 +294,7 @@ def train_rlvr_grpo(
                 avg_response_len,
             )
 
-            # Print step metrics
+            # Imprime as métricas do step
             print(
                 f"[Step {current_step}/{steps}] "
                 f"loss={stats['loss']:.4f} "
@@ -302,8 +302,8 @@ def train_rlvr_grpo(
                 f"avg_resp_len={avg_response_len:.1f}"
             )
 
-            # Sample outputs (every 10 steps) to check if model
-            # generates coherent text
+            # Amostra saídas (a cada 10 steps) para checar se o modelo
+            # gera texto coerente
             if current_step % 10 == 0:
                 print(f"[Step {current_step}] sample outputs")
                 for i, sample in enumerate(stats["samples"][:3]):
@@ -314,7 +314,7 @@ def train_rlvr_grpo(
                     )
                 print()
 
-            # Stage 8: Save model checkpoint
+            # Estágio 8: salva o checkpoint do modelo
             if checkpoint_every and current_step % checkpoint_every == 0:
                 ckpt_path = save_checkpoint(
                     model=model,
@@ -323,7 +323,7 @@ def train_rlvr_grpo(
                 )
                 print(f"Saved checkpoint to {ckpt_path}")
 
-    # Save a model checkpoint if we interrupt the training early
+    # Salva um checkpoint do modelo caso interrompamos o treinamento cedo
     except KeyboardInterrupt:
         ckpt_path = save_checkpoint(
             model=model,

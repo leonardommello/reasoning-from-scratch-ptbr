@@ -15,22 +15,22 @@ END_THINK_TOKEN_ID = 151668
 
 
 def download_from_github(rel_path, out=None):
-    github_raw_base = (  # Base URL
+    github_raw_base = (  # URL base
         "https://raw.githubusercontent.com/rasbt/"
         "reasoning-from-scratch/refs/heads/main/"
     )
 
     rel_path = Path(rel_path)
-    # Use URL file name as default output file name
+    # Usa o nome do arquivo da URL como nome de saída padrão
     out = Path(out) if out is not None else Path(rel_path.name)
 
-    # Skip download if file already exists locally
+    # Pula o download se o arquivo já existir localmente
     if out.exists():
         size_kb = out.stat().st_size / 1e3
         print(f"{out}: {size_kb:.1f} KB (cached)")
         return out
 
-    # Download file
+    # Baixa o arquivo
     r = requests.get(github_raw_base + rel_path.as_posix())
     r.raise_for_status()
 
@@ -40,7 +40,7 @@ def download_from_github(rel_path, out=None):
 
 
 def moving_average(values, window_fraction=0.25):
-    # Smooth a noisy training signal to reveal longer-term trends during training
+    # Suaviza um sinal de treinamento ruidoso, para revelar tendências de prazo mais longo durante o treinamento
     window_size = max(1, int(window_fraction * len(values)))
     smoothed = []
 
@@ -55,14 +55,14 @@ def moving_average(values, window_fraction=0.25):
 def plot_grpo_metrics(csv_path, columns, save_as=None):
     data = {name: {"steps": [], "values": []} for name in columns}
 
-    # Open and read CSV log file
+    # Abre e lê o arquivo de log CSV
     with Path(csv_path).open(newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row or not row.get("step"):
                 continue
 
-            # Use the training step as the shared x-axis across all metrics
+            # Usa o step de treinamento como eixo x compartilhado entre todas as métricas
             step = int(row["step"])
 
             for name in columns:
@@ -71,7 +71,7 @@ def plot_grpo_metrics(csv_path, columns, save_as=None):
                     data[name]["steps"].append(step)
                     data[name]["values"].append(float(value_str))
 
-    # Create a fixed grid so loss, rewards, response length, etc. can be shown side by side
+    # Cria uma grade fixa, para que loss, rewards, comprimento de resposta etc. possam ser exibidos lado a lado
     fig, axes = plt.subplots(2, 2, sharex=True, figsize=(6, 4))
     axes = axes.ravel()
 
@@ -79,12 +79,12 @@ def plot_grpo_metrics(csv_path, columns, save_as=None):
         steps = data[name]["steps"]
         values = data[name]["values"]
 
-        # Skip metrics that are not present
+        # Pula as métricas que não estiverem presentes
         if not values:
             fig.delaxes(axes[i])
             continue
 
-        # Evaluation accuracy as barplot because we don't have data for each step
+        # Acurácia de avaliação como gráfico de barras, porque não temos dados para cada step
         if name == "eval_acc":
             axes[i].bar(steps, values, width=20)
         else:
@@ -104,11 +104,11 @@ def plot_grpo_metrics(csv_path, columns, save_as=None):
 
 
 def compute_advantage_stats(rewards_list):
-    # This is what we already compute in GRPO:
+    # Isto é o que já calculamos no GRPO:
     rewards = torch.tensor(rewards_list)
     advantages = (rewards - rewards.mean()) / (rewards.std() + 1e-4)
 
-    # These are the new statistics we add:
+    # Estas são as novas estatísticas que acrescentamos:
     adv_avg = advantages.mean().item()
     adv_std = advantages.std().item()
 
@@ -116,26 +116,26 @@ def compute_advantage_stats(rewards_list):
 
 
 def sequence_logprob_and_entropy(model, token_ids, prompt_len):
-    # Old: Code is identical to chapter 5
+    # Antigo: o código é idêntico ao do capítulo 5
     logits = model(token_ids.unsqueeze(0)).squeeze(0).float()
     logprobs = torch.log_softmax(logits, dim=-1)
 
     targets = token_ids[1:]
     selected = logprobs[:-1].gather(1, targets.unsqueeze(-1)).squeeze(-1)
 
-    # Log-prob of the generated answer tokens (sum over answer steps)
+    # Log-prob dos tokens da resposta gerada (soma sobre os steps da resposta)
     selected_answer_logprobs = selected[prompt_len - 1:]
     logp_all_steps = torch.sum(selected_answer_logprobs)
 
-    # New: Calculate entropy
+    # Novo: calcula a entropia
     all_answer_logprobs = logprobs[:-1][prompt_len - 1:]
-    if all_answer_logprobs.numel() == 0:  # Safeguard if the model immediately returns EOS token
+    if all_answer_logprobs.numel() == 0:  # Proteção caso o modelo retorne imediatamente o token EOS
         entropy_all_steps = logp_all_steps.new_tensor(0.0)
     else:
-        all_answer_probs = torch.exp(all_answer_logprobs)  # convert logprob to prob
-        plogp = all_answer_probs * all_answer_logprobs     # elementwise p * log p
-        step_entropy = -torch.sum(plogp, dim=-1)           # sum over vocab -> entropy per step
-        entropy_all_steps = torch.mean(step_entropy)       # average over answer steps
+        all_answer_probs = torch.exp(all_answer_logprobs)  # converte logprob em prob
+        plogp = all_answer_probs * all_answer_logprobs     # p * log p, elemento a elemento
+        step_entropy = -torch.sum(plogp, dim=-1)           # soma sobre o vocabulário -> entropia por step
+        entropy_all_steps = torch.mean(step_entropy)       # média sobre os steps da resposta
 
     return logp_all_steps, entropy_all_steps
 

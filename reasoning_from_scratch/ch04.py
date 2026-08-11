@@ -13,11 +13,11 @@ import torch
 def generate_text_stream_concat_flex(
     model, tokenizer, prompt, device, max_new_tokens,
     verbose=False,
-    generate_func=None,  # New
-    **generate_kwargs  # New
+    generate_func=None,  # Novo
+    **generate_kwargs  # Novo
 ):
 
-    if generate_func is None:  # New
+    if generate_func is None:  # Novo
         generate_func = generate_text_basic_stream_cache
 
     input_ids = torch.tensor(
@@ -25,12 +25,12 @@ def generate_text_stream_concat_flex(
         ).unsqueeze(0)
 
     generated_ids = []
-    for token in generate_func(  # New
+    for token in generate_func(  # Novo
         model=model,
         token_ids=input_ids,
         max_new_tokens=max_new_tokens,
         eos_token_id=tokenizer.eos_token_id,
-        **generate_kwargs,  # New
+        **generate_kwargs,  # Novo
     ):
         next_token_id = token.squeeze(0)
         generated_ids.append(next_token_id.item())
@@ -51,18 +51,18 @@ def plot_scores_bar(
 
     import matplotlib.pyplot as plt
 
-    # Select vocabulary subsection
+    # Seleciona um trecho do vocabulário
     x = torch.arange(start, end)
 
-    # .cpu() is a shortcut for to(torch.device("cpu"))
+    # .cpu() é um atalho para to(torch.device("cpu"))
     logits_section = next_token_logits[0, start:end].float().cpu()
 
-    # Plot logits
+    # Plota os logits
     plt.bar(x, logits_section)
     plt.xlabel("Vocabulary index")
     plt.ylabel(ylabel)
 
-    # Highlight max logit
+    # Destaca o logit máximo
     if arrow:
         max_idx = torch.argmax(logits_section)
         plt.annotate(
@@ -96,11 +96,11 @@ def plot_logits_with_temperature(
     x = torch.arange(start, end)
     logits_orig = next_token_logits[0, start:end].float().cpu()
 
-    # Apply temperature scaling
+    # Aplica temperature scaling
     logits_scaled = [
         scale_logits_by_temperature(logits_orig, T) for T in temps
     ]
-    # Plot logits
+    # Plota os logits
     plt.plot(x, logits_orig, label="Original logits", lw=2)
     plt.plot(
         x, logits_scaled[0],
@@ -111,7 +111,7 @@ def plot_logits_with_temperature(
         label=f"T={temps[1]} (flatter)", ls=":", lw=3
     )
 
-    # Highlight max logit
+    # Destaca o logit máximo
     max_idx = torch.argmax(logits_orig)
     plt.annotate(
         "Berlin",
@@ -130,15 +130,15 @@ def plot_logits_with_temperature(
 
 
 def count_samples(probas, num_samples=1000, threshold=1, tokenizer=None):
-    # Draw samples according to probabilities
+    # Sorteia amostras conforme as probabilidades
     samples = torch.multinomial(
         probas.cpu(), num_samples=num_samples, replacement=True
     )
 
-    # Count how often each index was selected
+    # Conta quantas vezes cada índice foi selecionado
     counts = torch.bincount(samples.squeeze(0), minlength=1)
 
-    # Print results
+    # Imprime os resultados
     for i, c in enumerate(counts):
         if c > threshold:
             if tokenizer is None:
@@ -159,25 +159,25 @@ def generate_text_temp_stream_cache(
     cache = KVCache(n_layers=model.cfg["n_layers"])
     model.reset_kv_cache()
 
-    # Step 3.1: Get logits
+    # Passo 3.1: obtém os logits
     out = model(token_ids, cache=cache)[:, -1]
     for _ in range(max_new_tokens):
 
         ########################################
-        # NEW:
+        # NOVO:
         orig_device = token_ids.device
 
         if temperature is None or temperature == 0.0:
             next_token = torch.argmax(out, dim=-1, keepdim=True)
 
         else:
-            # Step 3.2: Apply temperature scaling on logits
+            # Passo 3.2: aplica temperature scaling nos logits
             logits = scale_logits_by_temperature(out, temperature)
 
-            # Step 3.3: Convert to probabilities
+            # Passo 3.3: converte em probabilidades
             probas = torch.softmax(logits, dim=-1)
 
-            # Step 3.4: Sample token according to probabilities
+            # Passo 3.4: amostra o token conforme as probabilidades
             next_token = torch.multinomial(probas.cpu(), num_samples=1)
             next_token = next_token.to(orig_device)
 
@@ -194,30 +194,30 @@ def top_p_filter(probas, top_p):
     if top_p is None or top_p >= 1.0:
         return probas
 
-    # Step 4.1: Sort by descending probability
+    # Passo 4.1: ordena por probabilidade decrescente
     sorted_probas, sorted_idx = torch.sort(probas, dim=1, descending=True)
 
-    # Step 4.2: Cumulative sum
+    # Passo 4.2: soma cumulativa
     cumprobas = torch.cumsum(sorted_probas, dim=1)
 
-    # Step 4.3.1: Keep tokens where prefix cumulative mass (before token) is < top_ps
-    # Example: [0.5, 0.41, 0.09] with top_p=0.9 should keep the first two tokens
-    prefix = cumprobas - sorted_probas   # cumulative mass before each token
+    # Passo 4.3.1: mantém os tokens em que a massa cumulativa anterior (antes do token) é < top_ps
+    # Exemplo: [0.5, 0.41, 0.09] com top_p=0.9 deve manter os dois primeiros tokens
+    prefix = cumprobas - sorted_probas   # massa cumulativa antes de cada token
     keep = prefix < top_p
-    # Always keep at least one token (fallback for very small/non-positive top_p)
+    # Sempre mantém pelo menos um token (fallback para top_p muito pequeno ou não positivo)
     keep[:, 0] = True
 
-    # Step 4.3.2: Zero out beyond cutoff
+    # Passo 4.3.2: zera tudo além do corte
     kept_sorted = torch.where(
         keep, sorted_probas,
         torch.zeros_like(sorted_probas)
     )
-    # Step 4.3.3: Map back to original order
+    # Passo 4.3.3: mapeia de volta para a ordem original
     filtered = torch.zeros_like(probas).scatter(1, sorted_idx, kept_sorted)
 
-    # Step 4.4: Renormalize to sum to 1
+    # Passo 4.4: renormaliza para somar 1
     denom = torch.sum(filtered, dim=1, keepdim=True).clamp_min(1e-12)
-    # keepdim=True is technically not necessary but it makes the code work in batched cases
+    # keepdim=True tecnicamente não é necessário, mas faz o código funcionar em casos com batch
     return filtered / denom
 
 
@@ -234,7 +234,7 @@ def generate_text_top_p_stream_cache(
     cache = KVCache(n_layers=model.cfg["n_layers"])
     model.reset_kv_cache()
 
-    # Step 3.1: Get logits
+    # Passo 3.1: obtém os logits
     out = model(token_ids, cache=cache)[:, -1]
     for _ in range(max_new_tokens):
 
@@ -244,16 +244,16 @@ def generate_text_top_p_stream_cache(
             next_token = torch.argmax(out, dim=-1, keepdim=True)
 
         else:
-            # Step 3.2: Apply temperature scaling on logits
+            # Passo 3.2: aplica temperature scaling nos logits
             logits = scale_logits_by_temperature(out, temperature)
 
-            # Step 3.3: Convert to probabilities
+            # Passo 3.3: converte em probabilidades
             probas = torch.softmax(logits, dim=-1)
 
-            # (New) Step 4: Apply top-p filter to probabilities
+            # (Novo) Passo 4: aplica o filtro top-p nas probabilidades
             probas = top_p_filter(probas, top_p)
 
-            # Step 3.4: Sample token according to probabilities
+            # Passo 3.4: amostra o token conforme as probabilidades
             next_token = torch.multinomial(probas.cpu(), num_samples=1)
             next_token = next_token.to(orig_device)
 
@@ -272,7 +272,7 @@ def self_consistency_vote(
 ):
     full_answers, short_answers = [], []
 
-    # 1) Sample multiple answers
+    # 1) Amostra várias respostas
     for i in range(num_samples):
         if seed is not None:
             torch.manual_seed(seed + i + 1)
@@ -284,7 +284,7 @@ def self_consistency_vote(
             temperature=temperature, top_p=top_p,
         )
 
-        # 2) Extract the final (short) answer from each answer
+        # 2) Extrai a resposta final (curta) de cada resposta
         short = extract_final_candidate(
             answer, fallback="number_then_full"
         )
@@ -293,7 +293,7 @@ def self_consistency_vote(
         if show_progress:
             print(f"[Sample {i+1}/{num_samples}] → {short!r}")
 
-    # 3) Choose the most frequent final answer (self-consistency vote)
+    # 3) Escolhe a resposta final mais frequente (voto de self-consistency)
     counts = Counter(short_answers)
     groups = {s: [] for s in counts}
     for idx, s in enumerate(short_answers):

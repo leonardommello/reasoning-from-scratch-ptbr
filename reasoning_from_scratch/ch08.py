@@ -105,17 +105,17 @@ def build_examples(data, tokenizer):
 
     for entry in data:
         try:
-            # Step 1: encode prompt
+            # Passo 1: codifica o prompt
             prompt = render_prompt(entry["problem"])
             prompt_ids = tokenizer.encode(prompt)
 
-            # Step 2: encode answer
+            # Passo 2: codifica a resposta
             target_answer = format_distilled_answer(entry)
             answer_ids = tokenizer.encode(
                 target_answer, chat_wrapped=False
             )
 
-            # Step 3: Combine prompt and answer
+            # Passo 3: combina prompt e resposta
             token_ids = (
                 prompt_ids + answer_ids + [tokenizer.eos_token_id]
             )
@@ -221,7 +221,7 @@ def train_distillation(
     checkpoint_dir="checkpoints",
     csv_log_path=None,
 ):
-    # Step 1: initialize optimizer (model is already loaded)
+    # Passo 1: inicializa o otimizador (o modelo já está carregado)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
     model.train()
 
@@ -234,36 +234,36 @@ def train_distillation(
         csv_log_path = f"train_distill_metrics_{timestamp}.csv"
     csv_log_path = Path(csv_log_path)
 
-    # Step 2: iterate over training epochs
+    # Passo 2: itera sobre as epochs de treinamento
     for epoch in range(1, epochs + 1):
-        # Step 3: shuffle the training examples at the start of the epoch
+        # Passo 3: embaralha os exemplos de treinamento no início da epoch
         epoch_examples = list(train_examples)
         rng.shuffle(epoch_examples)
 
-        # Step 4: iterate over training examples in epoch
+        # Passo 4: itera sobre os exemplos de treinamento da epoch
         for example in epoch_examples:
             global_step += 1
 
-            # Stage 5: reset loss gradient
-            # (it's best practice to do this at the beginning of each step)
+            # Estágio 5: zera o gradiente da loss
+            # (é boa prática fazer isso no início de cada step)
             optimizer.zero_grad()
 
-            # Step 6: compute the cross-entropy loss for the current example
+            # Passo 6: calcula a cross-entropy loss para o exemplo atual
             loss = compute_example_loss(model, example, device)
 
-            # Step 7: backpropagate gradients
+            # Passo 7: retropropaga os gradientes
             loss.backward()
 
-            # Optionally clip large gradients to improve training stability
+            # Opcionalmente, limita gradientes grandes, para melhorar a estabilidade do treinamento
             if grad_clip_norm is not None:
                 torch.nn.utils.clip_grad_norm_(
                     model.parameters(), grad_clip_norm
                 )
 
-            # Step 8: update the model weights
+            # Passo 8: atualiza os pesos do modelo
             optimizer.step()
 
-            # Step 9: periodically evaluate the current model on the validation set
+            # Passo 9: avalia periodicamente o modelo atual no conjunto de validação
             if log_every and global_step % log_every == 0:
                 val_loss = evaluate_examples(
                     model=model,
@@ -285,7 +285,7 @@ def train_distillation(
                     val_loss=val_loss,
                 )
 
-        # Step 10: save a checkpoint for this epoch
+        # Passo 10: salva um checkpoint desta epoch
         ckpt_path = save_checkpoint(
             model=model,
             checkpoint_dir=checkpoint_dir,
@@ -347,7 +347,7 @@ def plot_distill_metrics(csv_path="train_distill_metrics.csv"):
     ax.set_ylabel("Loss")
     ax.legend()
 
-    # Epoch axis
+    # Eixo de epochs
     epoch_axis = ax.secondary_xaxis("bottom")
     epoch_axis.spines["bottom"].set_position(("outward", 45))
     epochs = sorted(epoch_bounds)
