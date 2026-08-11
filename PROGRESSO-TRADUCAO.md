@@ -74,18 +74,46 @@ scripts e baixar checkpoints. Não bloqueiam o uso do repositório:
 | `ch08/06_use_via_huggingface/{export,wrapper}_approach/README.md` | 12.385 |
 | `ch08/02_generate_distillation_data/other_providers/minimax/README.md` | 3.067 |
 
-## Etapa 5 — comentários e docstrings `.py` ⬜
+## Etapa 5 — comentários `.py` (parcial)
 
-91 arquivos, exceto `tests/`. Respeitar as strings congeladas do glossário.
+Ferramenta: `tools_traducao/pycomments.py`, que substitui comentários por número
+de linha preservando indentação e código, e **recusa** alterar os avisos de
+atribuição exigidos pela Apache-2.0 §4(c).
+
+| Alvo | Traduzido |
+|---|---|
+| `reasoning_from_scratch/` (pacote core) | 166/521 (31%) |
+| scripts bônus em `ch0*/` | 5/330 (1%) |
+
+Concluídos ✅ `ch02.py` · `ch03.py` · `ch04.py` · `ch05.py` · `ch06.py` ·
+`ch07.py` · `ch08.py` · `utils.py` · `appendix_f.py` · `ch02_ex.py`
+
+Pendentes ⬜ `qwen3.py` (123) · `qwen3_batched.py` (90) ·
+`qwen3_optimized.py` (75) · `appendix_c.py` (31) — são os arquivos de
+arquitetura do modelo. Mais os scripts bônus.
+
+Uma linha ficou deliberadamente sem tradução: `ch03.py:236`, que contém um
+caractere Unicode de sobrescrito. Traduzi-la sem conseguir inspecionar o byte
+exato arriscaria corromper o arquivo.
 
 ## Verificação
 
 - ✅ Todos os `.ipynb` são JSON válido
 - ✅ Aviso Apache-2.0 §4(b) em todos os notebooks traduzidos
-- ⬜ `pytest tests/` — **não executado**: `pytest` não está instalado neste
-  ambiente. Nenhum arquivo `.py` foi modificado até aqui, então a suíte não foi
-  afetada. Rodar antes de mexer na etapa 5:
-  `SKIP_EXPENSIVE=1 RUN_REAL_DOWNLOAD_TESTS=0 uv run pytest tests`
+- ✅ Todo o pacote `reasoning_from_scratch/` passa em `ast.parse`
+- ✅ Strings congeladas intactas (`PASS`/`FAIL`, `Accuracy:`, `Time:`,
+  `tokens/sec`, `Average/Shortest/Longest: N tokens`)
+- ✅ **`pytest tests/`**: 89 passaram, 14 falharam, 31 puladas — conjunto de
+  falhas **idêntico** ao baseline capturado antes de qualquer alteração em `.py`.
+  Zero regressões introduzidas.
+
+As 14 falhas são pré-existentes e vêm de dependências opcionais ausentes neste
+ambiente (`transformers`, e afins), não da tradução. Para reproduzir:
+
+```bash
+SKIP_EXPENSIVE=1 RUN_REAL_DOWNLOAD_TESTS=0 \
+  pytest tests/ --ignore=tests/test_ch08_huggingface.py
+```
 
 ## Achado para reportar upstream
 
