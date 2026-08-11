@@ -1,8 +1,8 @@
-# Appendix D: Using larger LLMs
+# Apêndice D: Usando LLMs maiores
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [chD_main.ipynb](chD_main.ipynb): main chapter code
+- [chD_main.ipynb](chD_main.ipynb): código principal do capítulo
 
 &nbsp;

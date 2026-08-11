@@ -1,10 +1,10 @@
 ---
-name: Ask a Question
-about: Ask questions related to the book
+name: Fazer uma pergunta
+about: Faça perguntas relacionadas ao livro
 title: ''
 labels: [question]
 assignees: rasbt
 
 ---
 
-If you have a question that is not a bug, please consider asking it in this GitHub repository's [discussion forum](https://github.com/rasbt/reasoning-from-scratch/discussions).
+Se você tem uma pergunta que não é um bug, considere fazê-la no [fórum de discussão](https://github.com/rasbt/reasoning-from-scratch/discussions) deste repositório do GitHub.

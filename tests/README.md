@@ -1,98 +1,98 @@
-# Tests
+# Testes
 
-This directory contains the repository's Python test suite.
+Este diretório contém a suíte de testes Python do repositório.
 
-## Local runs
+## Execuções locais
 
-Install the dev environment first:
+Instale primeiro o ambiente de desenvolvimento:
 
 ```bash
 uv sync --group dev
 ```
 
-### 1. Normal suite, ignoring expensive tests  (recommended)
+### 1. Suíte normal, ignorando os testes caros (recomendado)
 
-This is recommended for quick testing and development of new features.
+Recomendado para testes rápidos e desenvolvimento de novas funcionalidades.
 
 ```bash
 SKIP_EXPENSIVE=1 RUN_REAL_DOWNLOAD_TESTS=0 uv run pytest tests
 ```
 
-Run a single test file:
+Rodar um único arquivo de teste:
 
 ```bash
 SKIP_EXPENSIVE=1 RUN_REAL_DOWNLOAD_TESTS=0 uv run pytest tests/test_ch03.py
 ```
 
 
-This is the closest local equivalent to the default GitHub test matrix.
+Este é o equivalente local mais próximo da matriz de testes padrão do GitHub.
 
-### 2. Normal suite plus expensive tests
+### 2. Suíte normal mais os testes caros
 
-There are some codes that are ignored by default, because they are relatively expensive to run. I recommend running these tests if you are finished with the basic debugging.
+Alguns códigos são ignorados por padrão porque são relativamente caros de rodar. Recomendo rodar esses testes quando você terminar a depuração básica.
 
 ```bash
 SKIP_EXPENSIVE=0 RUN_REAL_DOWNLOAD_TESTS=0 uv run pytest tests
 ```
 
-Note that this runs tests guarded by `SKIP_EXPENSIVE` in the test files, but it still excludes the real network/download integration tests that download large model checkpoints.
+Note que isso roda os testes protegidos por `SKIP_EXPENSIVE` nos arquivos de teste, mas ainda exclui os testes de integração de rede/download reais, que baixam checkpoints grandes de modelo.
 
-### 3. Download tests only
+### 3. Somente os testes de download
 
-There are some tests that check whether the model checkpoint files are available for download and the servers (still) work. It's not necessary to run these tests locally or a regular basis. This is more meant for occasional testing.
+Alguns testes verificam se os arquivos de checkpoint dos modelos estão disponíveis para download e se os servidores (ainda) funcionam. Não é necessário rodar esses testes localmente ou com regularidade. Servem mais para testes ocasionais.
 
-To run these download tests, use:
+Para rodar esses testes de download, use:
 
 ```bash
 SKIP_EXPENSIVE=0 RUN_REAL_DOWNLOAD_TESTS=1 uv run pytest tests -k real_download
 ```
 
-How this works:
+Como isso funciona:
 
-- `pytest tests` collects tests from the `tests/` directory
-- `-k real_download` keeps only tests whose names contain `real_download`
+- `pytest tests` coleta os testes do diretório `tests/`
+- `-k real_download` mantém apenas os testes cujos nomes contêm `real_download`
 
-For a more targeted example, for example, to run the appendix D real snapshot test directly, use:
+Para um exemplo mais direcionado — por exemplo, para rodar diretamente o teste de snapshot real do apêndice D —, use:
 
 ```bash
 SKIP_EXPENSIVE=0 RUN_REAL_DOWNLOAD_TESTS=1 uv run pytest tests/test_appendix_d.py -k real_download_1_7b
 ```
 
-The opt-in real-download tests currently cover:
+Os testes opcionais de download real cobrem atualmente:
 
-- `tests/test_ch03.py`: real `math500_test.json` download and tokenizer downloads
-- `tests/test_ch06.py`: real math training set download
-- `tests/test_ch07.py`: real GitHub raw file download
-- `tests/test_ch08.py`: real distillation dataset and tokenizer downloads
-- `tests/test_appendix_d.py`: real `Qwen/Qwen3-1.7B-Base` snapshot download
-- `tests/test_qwen3.py`: real `Qwen/Qwen3-0.6B` tokenizer comparison
+- `tests/test_ch03.py`: download real do `math500_test.json` e downloads de tokenizer
+- `tests/test_ch06.py`: download real do conjunto de treinamento de matemática
+- `tests/test_ch07.py`: download real de arquivo raw do GitHub
+- `tests/test_ch08.py`: downloads reais do dataset de destilação e do tokenizer
+- `tests/test_appendix_d.py`: download real do snapshot `Qwen/Qwen3-1.7B-Base`
+- `tests/test_qwen3.py`: comparação real do tokenizer `Qwen/Qwen3-0.6B`
 
 
-### 4. Everything (not recommended)
+### 4. Tudo (não recomendado)
 
-This runs everything in the test suite. Note that this includes the computationally expensive tests (section 3) as well as the expenive download tests (section 4).
+Isso roda tudo na suíte de testes. Note que inclui tanto os testes computacionalmente caros (seção 3) quanto os caros testes de download (seção 4).
 
 ```bash
 SKIP_EXPENSIVE=0 RUN_REAL_DOWNLOAD_TESTS=1 uv run pytest tests
 ```
 
-This is not recommended for routine tests when making code changes, because the file downloads are very expensive and unnecessary to run on a regular basis.
+Não é recomendado para testes de rotina ao fazer alterações no código, porque os downloads de arquivos são muito custosos e desnecessários de rodar com regularidade.
 
 
-## What runs in GitHub CI
+## O que roda no GitHub CI
 
-The default GitHub test matrix runs the normal suite and omits heavier tests:
+A matriz de testes padrão do GitHub roda a suíte normal e omite os testes mais pesados:
 
 - `.github/workflows/tests-linux.yml`
 - `.github/workflows/tests-macos.yml`
 - `.github/workflows/tests-windows.yml`
 - `.github/workflows/basic-tests-pip.yml`
 
-These workflows set `SKIP_EXPENSIVE=1`, so expensive tests are skipped there. The reason is that the GitHub CI does not have the necessary computational resources (like a GPU) to run the expensive tests.
+Esses workflows definem `SKIP_EXPENSIVE=1`, então os testes caros são pulados ali. O motivo é que o GitHub CI não tem os recursos computacionais necessários (como uma GPU) para rodar os testes caros.
 
-The real network/download integration tests run in a separate workflow:
+Os testes de integração de rede/download reais rodam em um workflow separado:
 
 - `.github/workflows/real-download-tests.yml`
 
-That workflow sets `RUN_REAL_DOWNLOAD_TESTS=1` and runs only tests selected by `-k real_download`.
-It is not part of the default PR/push matrix. It runs on a weekly schedule and can also be started manually via `workflow_dispatch`.
+Esse workflow define `RUN_REAL_DOWNLOAD_TESTS=1` e roda apenas os testes selecionados por `-k real_download`.
+Ele não faz parte da matriz padrão de PR/push. Roda em uma agenda semanal e também pode ser iniciado manualmente via `workflow_dispatch`.

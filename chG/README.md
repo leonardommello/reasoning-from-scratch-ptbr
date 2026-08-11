@@ -1,8 +1,8 @@
-# Appendix G: Building a Chat Interface
+# Apêndice G: Construindo uma interface de chat
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code) contains the main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code) contém o código principal do capítulo e as soluções dos exercícios
 
 &nbsp;

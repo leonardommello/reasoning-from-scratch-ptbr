@@ -1,8 +1,8 @@
-# Chapter 1: Understanding Reasoning Models
+# Capítulo 1: Entendendo modelos de raciocínio
 
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-There is no code in this chapter.
+Não há código neste capítulo.
 

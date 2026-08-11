@@ -1,8 +1,8 @@
-# Appendix E: Batching and throughput-oriented execution
+# Apêndice E: Batching e execução orientada a throughput
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [chE_main.ipynb](chE_main.ipynb): main chapter code
+- [chE_main.ipynb](chE_main.ipynb): código principal do capítulo
 
 &nbsp;

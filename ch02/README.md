@@ -1,13 +1,13 @@
-# Chapter 2: Generating Text with a Pre-Trained LLM
+# Capítulo 2: Gerando texto com um LLM pré-treinado
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code): main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code): código principal do capítulo e soluções dos exercícios
 
 &nbsp;
-## Bonus material
+## Material complementar
 
-- [02_setup-tips](02_setup-tips/): optional Python setup recommendations and cloud GPU recommendations
-- [03_optimized-LLM](03_optimized-LLM): info on how to use a GPU-optimized version of the LLM
+- [02_setup-tips](02_setup-tips/): recomendações opcionais de configuração do Python e recomendações de GPU na nuvem
+- [03_optimized-LLM](03_optimized-LLM): informações sobre como usar uma versão do LLM otimizada para GPU
 

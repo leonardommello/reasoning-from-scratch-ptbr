@@ -1,11 +1,11 @@
-# Chapter 6: Training Reasoning Models with Reinforcement Learning
+# Capítulo 6: Treinando modelos de raciocínio com aprendizado por reforço
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code): main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code): código principal do capítulo e soluções dos exercícios
 
 &nbsp;
-## Bonus material
+## Material complementar
 
-- [02_rlvr_grpo_scripts_intro](02_rlvr_grpo_scripts_intro): Python scripts that implement the original GRPO algorithm without KL loss term. (Chapter 7 implements common GRPO modifications to stabilize the training.)
+- [02_rlvr_grpo_scripts_intro](02_rlvr_grpo_scripts_intro): scripts Python que implementam o algoritmo GRPO original sem o termo de KL loss. (O capítulo 7 implementa modificações comuns do GRPO para estabilizar o treinamento.)

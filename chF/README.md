@@ -1,14 +1,14 @@
-# Appendix F: Common Approaches to LLM Evaluation
+# Apêndice F: Abordagens comuns para avaliação de LLMs
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code): the main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code): o código principal do capítulo e as soluções dos exercícios
 
 
 &nbsp;
-## Bonus materials
+## Materiais complementares
 
-- [02_mmlu](02_mmlu): MMLU benchmark evaluation with all three different MMLU approaches
-- [03_leaderboards](03_leaderboards): Elo and Bradley-Terry implementations of leaderboard rankings
-- [04_llm-judge](04_llm-judge): LLM-as-a-judge approach, where a judge LLM evaluates a candidate LLM
+- [02_mmlu](02_mmlu): avaliação com o benchmark MMLU usando as três abordagens diferentes de MMLU
+- [03_leaderboards](03_leaderboards): implementações de Elo e Bradley-Terry para rankings de leaderboard
+- [04_llm-judge](04_llm-judge): abordagem LLM-as-a-judge, em que um LLM juiz avalia um LLM candidato

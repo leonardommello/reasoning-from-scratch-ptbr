@@ -1,12 +1,12 @@
-# Chapter 3: Evaluating Reasoning Models
+# Capítulo 3: Avaliando modelos de raciocínio
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code): main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code): código principal do capítulo e soluções dos exercícios
 
 &nbsp;
-## Bonus material
+## Material complementar
 
-- [02_math500-verifier-scripts](02_math500-verifier-scripts): optional Python scripts to run the MATH-500 evaluation from the command line, including a batched version with higher throughput
-- [03_advanced-parser](03_advanced-parser): a sophisticated hybrid LaTeX parser, plus a notebook comparing it against the current parser on selected examples
+- [02_math500-verifier-scripts](02_math500-verifier-scripts): scripts Python opcionais para rodar a avaliação do MATH-500 pela linha de comando, incluindo uma versão em batch com throughput maior
+- [03_advanced-parser](03_advanced-parser): um parser híbrido de LaTeX sofisticado, mais um notebook que o compara com o parser atual em exemplos selecionados

@@ -1,11 +1,11 @@
-# Chapter 5: Inference-Time Scaling via Self-Refinement
+# Capítulo 5: Inference-time scaling via self-refinement
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code): main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code): código principal do capítulo e soluções dos exercícios
 
 &nbsp;
-## Bonus material
+## Material complementar
 
-- [02_math500-more-inference-scaling-scripts](02_math500-more-inference-scaling-scripts): optional Python scripts to apply the inference scaling techniques covered in this chapter (Best-of-N and self-refinement) to the MATH-500 evaluation from the previous chapter.
+- [02_math500-more-inference-scaling-scripts](02_math500-more-inference-scaling-scripts): scripts Python opcionais para aplicar as técnicas de inference scaling abordadas neste capítulo (best-of-N e self-refinement) à avaliação do MATH-500 do capítulo anterior.

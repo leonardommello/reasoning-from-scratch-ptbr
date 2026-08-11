@@ -1,9 +1,9 @@
-# Appendix C: Qwen3 LLM Source Code
+# Apêndice C: Código-fonte do LLM Qwen3
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [01_main-chapter-code](01_main-chapter-code) contains the main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code) contém o código principal do capítulo e as soluções dos exercícios
 
 &nbsp;
 
