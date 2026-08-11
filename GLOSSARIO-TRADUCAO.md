@@ -91,4 +91,28 @@ Siglas nunca são expandidas em português.
 - Branch: `traducao-pt-br`
 - Um commit por capítulo: `traduz: chNN — <alvo>`
 - Progresso: `PROGRESSO-TRADUCAO.md`
-- Licença: Apache-2.0. Obra derivada — modificações registradas no README.
+
+## Conformidade com a Apache-2.0
+
+O repositório original é `Copyright 2025-2026 Sebastian Raschka`, licenciado sob
+Apache License 2.0. A Seção 2 concede licença perpétua e irrevogável para
+reproduzir, preparar obras derivadas, exibir publicamente e distribuir a obra e
+suas obras derivadas. Uma tradução é obra derivada, então esta tradução e sua
+publicação estão cobertas pela licença.
+
+A Seção 4 impõe obrigações que este fork cumpre:
+
+| Obrigação | Como é cumprida |
+|---|---|
+| (a) entregar cópia da licença | `LICENSE` preservado sem alterações |
+| (b) marcar arquivos modificados de forma proeminente | aviso de tradução no `README.md`, na célula de crédito de cada notebook e no rodapé do site |
+| (c) preservar avisos de copyright, patente, marca e atribuição | tabela de crédito ao autor mantida no topo de cada notebook; links para o repositório e para o livro preservados |
+| (d) preservar `NOTICE` | o repositório original não possui arquivo `NOTICE` |
+
+Limites que esta tradução respeita:
+
+- Traduz somente o que está no repositório. O texto do livro impresso publicado
+  pela Manning não faz parte do repositório e não é reproduzido nem reconstruído aqui.
+- Não se apresenta como edição oficial, como produto da Manning, nem como
+  substituto do livro. O material publicado aponta para a compra do livro.
+- Não remove nem obscurece a autoria original.
