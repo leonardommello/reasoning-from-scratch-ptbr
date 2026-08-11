@@ -1,75 +1,75 @@
-# Chapter 8 Bonus Material: Use Qwen3 via a Local Hugging Face Wrapper
+# Material complementar do capítulo 8: usar o Qwen3 por um wrapper local do Hugging Face
 
-This folder shows how to use the scratch [`Qwen3Model`](../../../reasoning_from_scratch/qwen3.py) with Hugging Face `transformers` library by wrapping it in a thin local `PreTrainedModel` class for compatibility.
+Esta pasta mostra como usar o [`Qwen3Model`](../../../reasoning_from_scratch/qwen3.py) feito do zero com a biblioteca `transformers` do Hugging Face, encapsulando-o em uma classe `PreTrainedModel` local e fina, para compatibilidade.
 
-This lets you use:
+Isso permite que você use:
 
 - `model.generate(...)`
 - `transformers.Trainer`
 
-directly with local `.pth` model files from this repository, including the base Qwen3 weights and compatible checkpoints from chapters 6-8.
+diretamente com arquivos de modelo `.pth` locais deste repositório, incluindo os pesos base do Qwen3 e os checkpoints compatíveis dos capítulos 6 a 8.
 
 &nbsp;
-## Files
+## Arquivos
 
-- [hf_wrapper.py](hf_wrapper.py): local `PreTrainedModel` wrapper around the from-scratch `Qwen3Model` we use throughout the book
-- [hf_inference.py](hf_inference.py): text generation using the wrapper and the repo's tokenizer
-- [hf_trainer.py](hf_trainer.py): `Trainer` example using the wrapper and the chapter 8 distillation JSON format
+- [hf_wrapper.py](hf_wrapper.py): wrapper `PreTrainedModel` local em torno do `Qwen3Model` feito do zero, que usamos ao longo do livro
+- [hf_inference.py](hf_inference.py): geração de texto usando o wrapper e o tokenizer do repositório
+- [hf_trainer.py](hf_trainer.py): exemplo com `Trainer`, usando o wrapper e o formato JSON de destilação do capítulo 8
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
 &nbsp;
-## What This Wrapper Does
+## O que este wrapper faz
 
-The wrapper keeps the model local to this repository and adapts it to the Hugging Face API.
+O wrapper mantém o modelo local a este repositório e o adapta à API do Hugging Face.
 
-Concretely, it:
+Concretamente, ele:
 
-- loads a local `.pth` model file directly into `Qwen3Model`
-- wraps that model in a `PreTrainedModel` interface
-- exposes a `forward(...)` method compatible with `Trainer`
-- enables `model.generate(...)`
-- keeps using the repository's `Qwen3Tokenizer`
+- carrega um arquivo de modelo `.pth` local diretamente no `Qwen3Model`
+- encapsula esse modelo em uma interface `PreTrainedModel`
+- expõe um método `forward(...)` compatível com o `Trainer`
+- habilita o `model.generate(...)`
+- continua usando o `Qwen3Tokenizer` do repositório
 
-Why? There were some readers curious about exploring the models further in `transformers`, which has more bells and whistles than the from-scratch code in this repo.
-
-&nbsp;
-## Limitations
-
-This is a small, local wrapper around the scratch model.
-
-Important implications:
-
-- it is meant for environments where `reasoning_from_scratch` is installed
-- it does not provide an `AutoTokenizer.from_pretrained(...)` workflow
-- it does not create a reusable model directory with `config.json` and tokenizer files
-- generation is kept intentionally simple, so it recomputes the full prefix instead of adapting the scratch KV cache to Hugging Face cache classes; if you want full support, you'd need to switch to the [../export_approach](../export_approach)
-
-Note that these constraints keep the code short and focused on local use inside this repository.
+Por quê? Havia leitores curiosos para explorar mais os modelos no `transformers`, que tem mais recursos do que o código do zero deste repositório.
 
 &nbsp;
-## Step 1: Install dependencies
+## Limitações
 
-This guide uses Hugging Face Transformers in addition to the repository dependencies. 
+Este é um wrapper pequeno e local em torno do modelo feito do zero.
+
+Implicações importantes:
+
+- é destinado a ambientes onde o `reasoning_from_scratch` está instalado
+- não fornece um fluxo de trabalho com `AutoTokenizer.from_pretrained(...)`
+- não cria um diretório de modelo reutilizável, com `config.json` e arquivos de tokenizer
+- a geração é mantida intencionalmente simples, então ela recalcula o prefixo inteiro em vez de adaptar o KV cache do código do zero às classes de cache do Hugging Face; se você quiser suporte completo, precisará mudar para a [../export_approach](../export_approach)
+
+Note que essas restrições mantêm o código curto e focado no uso local dentro deste repositório.
+
+&nbsp;
+## Passo 1: instalar as dependências
+
+Este guia usa o Hugging Face Transformers, além das dependências do repositório.
 
 ```bash
 pip install transformers accelerate
 ```
 
-Or, if you are using `uv`:
+Ou, se você usa `uv`:
 
 ```bash
 uv add --dev transformers accelerate
 ```
 
 &nbsp;
-## Step 2: Run local wrapped inference
+## Passo 2: rodar inferência local encapsulada
 
-To run the base model through the wrapper, use:
+Para rodar o modelo base pelo wrapper, use:
 
 ```bash
   uv run hf_inference.py \
@@ -77,7 +77,7 @@ To run the base model through the wrapper, use:
     --prompt "If x + 7 = 19, what is x?"
 ```
 
-To run the reasoning variant, use:
+Para rodar a variante de raciocínio, use:
 
 ```bash
   uv run hf_inference.py \
@@ -85,7 +85,7 @@ To run the reasoning variant, use:
     --prompt "If x + 7 = 19, what is x?"
 ```
 
-To run a local checkpoint instead:
+Para rodar um checkpoint local:
 
 ```bash
 uv run hf_inference.py \
@@ -94,19 +94,19 @@ uv run hf_inference.py \
   --prompt "If x + 7 = 19, what is x?"
 ```
 
-If `--model_path` is omitted, the script downloads the default base or reasoning model for the selected `--tokenizer_kind`. If `--model_path` is provided, it can point to the base Qwen3 `.pth` file or to any compatible checkpoint produced in chapters 6-8.
+Se `--model_path` for omitido, o script baixa o modelo base ou de raciocínio padrão para o `--tokenizer_kind` selecionado. Se `--model_path` for fornecido, ele pode apontar para o arquivo `.pth` base do Qwen3 ou para qualquer checkpoint compatível produzido nos capítulos 6 a 8.
 
-Internally, the inference script:
+Internamente, o script de inferência:
 
-1. builds the local wrapper model
-2. loads the selected `.pth` model file into the wrapped `Qwen3Model`
-3. tokenizes the prompt with the repo's tokenizer
-4. calls `model.generate(...)`
+1. constrói o modelo wrapper local
+2. carrega o arquivo de modelo `.pth` selecionado no `Qwen3Model` encapsulado
+3. tokeniza o prompt com o tokenizer do repositório
+4. chama `model.generate(...)`
 
 &nbsp;
-## Step 3: Continue training with `Trainer`
+## Passo 3: continuar o treinamento com o `Trainer`
 
-The same wrapper can also be used with `transformers.Trainer`:
+O mesmo wrapper também pode ser usado com o `transformers.Trainer`:
 
 ```bash
 uv run hf_trainer.py \
@@ -119,14 +119,14 @@ uv run hf_trainer.py \
   --logging_steps 1
 ```
 
-As with inference, `--model_path` can point to the base Qwen3 weights or to a compatible chapter 6-8 checkpoint.
+Assim como na inferência, `--model_path` pode apontar para os pesos base do Qwen3 ou para um checkpoint compatível dos capítulos 6 a 8.
 
-The trainer keeps the same answer-only objective used elsewhere in chapter 8:
+O trainer mantém o mesmo objetivo restrito à resposta, usado no restante do capítulo 8:
 
-- prompt tokens are masked out
-- only answer tokens contribute to the loss
-- reasoning mode wraps teacher traces as `<think>...</think>`
+- os tokens do prompt são mascarados
+- apenas os tokens da resposta contribuem para a loss
+- o modo de raciocínio envolve os traços do professor como `<think>...</think>`
 
-The input JSON format matches the distillation data generated in [../../02_generate_distillation_data](../../02_generate_distillation_data).
+O formato JSON de entrada corresponde aos dados de destilação gerados em [../../02_generate_distillation_data](../../02_generate_distillation_data).
 
 &nbsp;
