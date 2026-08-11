@@ -29,7 +29,7 @@ RE_NUMBER = re.compile(
     r"-?(?:\d+/\d+|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)"
 )
 
-LATEX_FIXES = [  # Latex formatting to be replaced
+LATEX_FIXES = [  # Formatação LaTeX a ser substituída
     (r"\\left\s*", ""),
     (r"\\right\s*", ""),
     (r"\\,|\\!|\\;|\\:", ""),
@@ -41,7 +41,7 @@ LATEX_FIXES = [  # Latex formatting to be replaced
     (r"°", ""),
 ]
 
-RE_SPECIAL = re.compile(r"<\|[^>]+?\|>")  # strip chat special tokens like <|assistant|>
+RE_SPECIAL = re.compile(r"<\|[^>]+?\|>")  # remove tokens especiais de chat, como <|assistant|>
 SUPERSCRIPT_MAP = {
     "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4",
     "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9",
@@ -146,23 +146,23 @@ def generate_text_stream_concat(
 
 
 def get_last_boxed(text):
-    # Find the last occurrence of "\boxed"
+    # Encontra a última ocorrência de "\boxed"
     boxed_start_idx = text.rfind(r"\boxed")
     if boxed_start_idx == -1:
         return None
 
-    # Get position after "\boxed"
+    # Pega a posição após "\boxed"
     current_idx = boxed_start_idx + len(r"\boxed")
 
-    # Skip any whitespace after "\boxed"
+    # Pula qualquer espaço em branco após "\boxed"
     while current_idx < len(text) and text[current_idx].isspace():
         current_idx += 1
 
-    # Expect an opening brace "{"
+    # Espera uma chave de abertura "{"
     if current_idx >= len(text) or text[current_idx] != "{":
         return None
 
-    # Parse the braces with nesting
+    # Faz o parsing das chaves com aninhamento
     current_idx += 1
     brace_depth = 1
     content_start_idx = current_idx
@@ -175,32 +175,32 @@ def get_last_boxed(text):
             brace_depth -= 1
         current_idx += 1
 
-    # Account for unbalanced braces
+    # Considera chaves desbalanceadas
     if brace_depth != 0:
         return None
 
-    # Extract content inside the outermost braces
+    # Extrai o conteúdo dentro das chaves mais externas
     return text[content_start_idx:current_idx-1]
 
 
 def extract_final_candidate(text, fallback="number_then_full"):
-    # Default return value if nothing matches
+    # Valor de retorno padrão, se nada corresponder
     result = ""
 
     if text:
-        # Prefer the last boxed expression if present
+        # Prefere a última expressão em box, se houver
         boxed = get_last_boxed(text.strip())
         if boxed:
             result = boxed.strip().strip("$ ")
 
-        # If no boxed expression, try fallback
+        # Se não houver expressão em box, tenta o fallback
         elif fallback in ("number_then_full", "number_only"):
             m = RE_NUMBER.findall(text)
             if m:
-                # Use last number
+                # Usa o último número
                 result = m[-1]
             elif fallback == "number_then_full":
-                # Else return full text if no number found
+                # Caso contrário, retorna o texto inteiro se nenhum número for encontrado
                 result = text
     return result
 
@@ -210,26 +210,26 @@ def normalize_text(text):
         return ""
     text = RE_SPECIAL.sub("", text).strip()
 
-    # Strip leading multiple-choice labels
-    # E.g., like "c. 3" -> 3, or "b: 2" -> 2
+    # Remove rótulos de múltipla escolha no início
+    # Por exemplo, "c. 3" -> 3, ou "b: 2" -> 2
     match = re.match(r"^[A-Za-z]\s*[.:]\s*(.+)$", text)
     if match:
         text = match.group(1)
 
-    # Remove angle-degree markers
+    # Remove marcadores de grau
     text = re.sub(r"\^\s*\{\s*\\circ\s*\}", "", text)   # ^{\circ}
     text = re.sub(r"\^\s*\\circ", "", text)             # ^\circ
-    text = text.replace("°", "")                        # Unicode degree
+    text = text.replace("°", "")                        # Grau em Unicode
 
-    # unwrap \text{...} if the whole string is wrapped
+    # desfaz \text{...} se a string inteira estiver envolvida
     match = re.match(r"^\\text\{(?P<x>.+?)\}$", text)
     if match:
         text = match.group("x")
 
-    # strip inline/display math wrappers \( \) \[ \]
+    # remove delimitadores de matemática inline/display \( \) \[ \]
     text = re.sub(r"\\\(|\\\)|\\\[|\\\]", "", text)
 
-    # light LaTeX canonicalization
+    # canonicalização leve de LaTeX
     for pat, rep in LATEX_FIXES:
         text = re.sub(pat, rep, text)
 
@@ -250,7 +250,7 @@ def normalize_text(text):
     )
     text = convert_superscripts(text)
 
-    # numbers/roots
+    # números/raízes
     text = text.replace("\\%", "%").replace("$", "").replace("%", "")
     text = re.sub(
         r"\\sqrt\s*\{([^}]*)\}",
@@ -263,7 +263,7 @@ def normalize_text(text):
         text,
     )
 
-    # fractions
+    # frações
     text = re.sub(
         r"\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}",
         lambda match: f"({match.group(1)})/({match.group(2)})",
@@ -275,7 +275,7 @@ def normalize_text(text):
         text,
     )
 
-    # exponent and mixed numbers
+    # expoente e números mistos
     text = text.replace("^", "**")
     text = re.sub(
         r"(?<=\d)\s+(\d+/\d+)",
@@ -294,22 +294,22 @@ def normalize_text(text):
 
 
 def sympy_parser(expr):
-    # To avoid crashing on long garbage responses
-    # that some badly trained models (chapter 6) may emit
+    # Para evitar travar em respostas longas e sem sentido
+    # que alguns modelos mal treinados (capítulo 6) podem emitir
     if expr is None or len(expr) > 2000:
         return None
     try:
         return spp.parse_expr(
             expr,
             transformations=(
-                # Standard transformations like handling parentheses
+                # Transformações padrão, como o tratamento de parênteses
                 *spp.standard_transformations,
 
-                # Allow omitted multiplication symbols (e.g., "2x" -> 2*x")
+                # Permite símbolos de multiplicação omitidos (por exemplo, "2x" -> 2*x")
                 spp.implicit_multiplication_application,
             ),
 
-            # Evaluate during parsing so simple constants simplify (e.g., 2+3 -> 5)
+            # Avalia durante o parsing, para que constantes simples simplifiquem (por exemplo, 2+3 -> 5)
             evaluate=True,
         )
     except (SympifyError, SyntaxError, TypeError, AttributeError,
@@ -318,17 +318,17 @@ def sympy_parser(expr):
 
 
 def equality_check(expr_gtruth, expr_pred):
-    # First, check if the two expressions are exactly the same string
+    # Primeiro, checa se as duas expressões são exatamente a mesma string
     if expr_gtruth == expr_pred:
         return True
 
-    # Parse both expressions into SymPy objects (returns None if parsing fails)
+    # Faz o parsing das duas expressões em objetos SymPy (retorna None se o parsing falhar)
     gtruth, pred = sympy_parser(expr_gtruth), sympy_parser(expr_pred)
 
-    # If both expressions were parsed successfully, try symbolic comparison
+    # Se ambas as expressões foram parseadas com sucesso, tenta a comparação simbólica
     if gtruth is not None and pred is not None:
         try:
-            # If the difference is 0, they are equivalent
+            # Se a diferença é 0, elas são equivalentes
             return simplify(gtruth - pred) == 0
         except (SympifyError, TypeError):
             pass
@@ -340,64 +340,64 @@ def split_into_parts(text):
     result = [text]
 
     if text:
-        # Check if text looks like a tuple or list, e.g. "(a, b)" or "[a, b]"
+        # Checa se o texto parece uma tupla ou lista, por exemplo, "(a, b)" ou "[a, b]"
         if (
             len(text) >= 2
             and text[0] in "([" and text[-1] in ")]"
             and "," in text[1:-1]
         ):
-            # Split on commas inside brackets and strip whitespace
+            # Divide nas vírgulas dentro dos colchetes e remove espaços em branco
             items = [p.strip() for p in text[1:-1].split(",")]
             if all(items):
                 result = items
     else:
-        # If text is empty, return an empty list
+        # Se o texto está vazio, retorna uma lista vazia
         result = []
 
     return result
 
 
 def grade_answer(pred_text, gt_text):
-    result = False  # Default outcome if checks fail
+    result = False  # Resultado padrão, caso as checagens falhem
 
-    # Only continue if both inputs are non-empty strings
+    # Só continua se ambas as entradas forem strings não vazias
     if pred_text is not None and gt_text is not None:
         gt_parts = split_into_parts(
             normalize_text(gt_text)
-        )  # Break ground truth into comparable parts
+        )  # Quebra o ground truth em partes comparáveis
 
         pred_parts = split_into_parts(
             normalize_text(pred_text)
-        )  # Break prediction into comparable parts
+        )  # Quebra a predição em partes comparáveis
 
-        # Ensure both sides have same number of valid parts
+        # Garante que ambos os lados tenham o mesmo número de partes válidas
         if (gt_parts and pred_parts
            and len(gt_parts) == len(pred_parts)):
             result = all(
                 equality_check(gt, pred)
                 for gt, pred in zip(gt_parts, pred_parts)
-            )  # Check each part for mathematical equivalence
+            )  # Checa cada parte quanto à equivalência matemática
 
-    return result  # True only if all checks passed
+    return result  # True apenas se todas as checagens passaram
 
 
 def run_demos_table(tests):
     header = ("Test", "Expect", "Got", "Status")
     rows = []
     for name, pred, gtruth, expect in tests:
-        got = grade_answer(pred, gtruth)  # Run equality check
+        got = grade_answer(pred, gtruth)  # Roda a checagem de igualdade
         status = "PASS" if got == expect else "FAIL"
         rows.append((name, str(expect), str(got), status))
 
     data = [header] + rows
 
-    # Compute max width for each column to align table nicely
+    # Calcula a largura máxima de cada coluna, para alinhar bem a tabela
     col_widths = [
         max(len(row[i]) for row in data)
         for i in range(len(header))
     ]
 
-    # Print table row by row
+    # Imprime a tabela linha por linha
     for row in data:
         line = " | ".join(
             row[i].ljust(col_widths[i])
@@ -405,7 +405,7 @@ def run_demos_table(tests):
         )
         print(line)
 
-    # Print summary of passed tests
+    # Imprime o resumo dos testes que passaram
     passed = sum(r[3] == "PASS" for r in rows)
     print(f"\nPassed {passed}/{len(rows)}")
 
@@ -435,7 +435,7 @@ def load_math500_test(local_path="math500_test.json", save_copy=True):
         r.raise_for_status()
         data = r.json()
 
-        if save_copy:  # Saves a local copy
+        if save_copy:  # Salva uma cópia local
             with local_path.open("w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
 
@@ -443,17 +443,17 @@ def load_math500_test(local_path="math500_test.json", save_copy=True):
 
 
 def mini_eval_demo(model, tokenizer, device):
-    ex = {  # Test example with "problem" and "answer" fields
+    ex = {  # Exemplo de teste com os campos "problem" e "answer"
         "problem": "Compute 1/2 + 1/6.",
         "answer": "2/3"
     }
-    prompt = render_prompt(ex["problem"])     # 1. Apply prompt template
-    gen_text = generate_text_stream_concat(   # 2. Generate response
+    prompt = render_prompt(ex["problem"])     # 1. Aplica o template de prompt
+    gen_text = generate_text_stream_concat(   # 2. Gera a resposta
         model, tokenizer, prompt, device,
         max_new_tokens=64,
     )
-    pred_answer = extract_final_candidate(gen_text)  # 3. Extract and normalize answer
-    is_correct = grade_answer(                       # 4. Grade answer
+    pred_answer = extract_final_candidate(gen_text)  # 3. Extrai e normaliza a resposta
+    is_correct = grade_answer(                       # 4. Avalia a resposta
         pred_answer, ex["answer"]
     )
     print(f"Device: {device}")
@@ -511,33 +511,33 @@ def evaluate_math500_stream(
 ):
 
     if out_path is None:
-        dev_name = str(device).replace(":", "-")  # Make filename compatible with Windows
+        dev_name = str(device).replace(":", "-")  # Torna o nome do arquivo compatível com o Windows
         out_path = Path(f"math500-{dev_name}.jsonl")
 
     num_examples = len(math_data)
     num_correct = 0
-    total_len = 0  # Calculates the average response length (see exercise 3.2)
+    total_len = 0  # Calcula o comprimento médio das respostas (veja o exercício 3.2)
     start_time = time.time()
 
-    with open(out_path, "w", encoding="utf-8") as f:  # Save results for inspection
+    with open(out_path, "w", encoding="utf-8") as f:  # Salva os resultados para inspeção
         for i, row in enumerate(math_data, start=1):
-            prompt = render_prompt(row["problem"])    # 1. Apply prompt template
-            gen_text = generate_text_stream_concat(   # 2. Generate response
+            prompt = render_prompt(row["problem"])    # 1. Aplica o template de prompt
+            gen_text = generate_text_stream_concat(   # 2. Gera a resposta
                 model, tokenizer, prompt, device,
                 max_new_tokens=max_new_tokens,
                 verbose=verbose,
             )
             total_len += len(tokenizer.encode(gen_text))
 
-            extracted = extract_final_candidate(  # 3. Extract and normalize answer
+            extracted = extract_final_candidate(  # 3. Extrai e normaliza a resposta
                 gen_text
             )
-            is_correct = grade_answer(            # 4. Grade answer
+            is_correct = grade_answer(            # 4. Avalia a resposta
                 extracted, row["answer"]
             )
             num_correct += int(is_correct)
 
-            record = {  # Record to be saved for inspection
+            record = {  # Registro a ser salvo para inspeção
                 "index": i,
                 "problem": row["problem"],
                 "gtruth_answer": row["answer"],
@@ -555,7 +555,7 @@ def evaluate_math500_stream(
                 label="MATH-500",
             )
             print(progress_msg, end="\r", flush=True)
-            if verbose:  # Print responses during the generation process
+            if verbose:  # Imprime as respostas durante o processo de geração
                 print(
                     f"\n\n{'='*50}\n{progress_msg}\n"
                     f"{'='*50}\nExtracted: {extracted}\n"
@@ -563,7 +563,7 @@ def evaluate_math500_stream(
                     f"Correct so far: {num_correct}\n{'-'*50}"
                 )
 
-    # Print summary information
+    # Imprime as informações de resumo
     seconds_elapsed = time.time() - start_time
     acc = num_correct / num_examples if num_examples else 0.0
     print(f"\nAccuracy: {acc*100:.1f}% ({num_correct}/{num_examples})")

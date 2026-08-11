@@ -62,12 +62,12 @@ def download_file(url, out_dir=".", backup_url=None):
                 r.raise_for_status()
                 size_remote = int(r.headers.get("Content-Length", 0))
 
-                # Skip download if already complete
+                # Pula o download se já estiver completo
                 if dest.exists() and size_remote and dest.stat().st_size == size_remote:
                     print(f"✓ {dest} already up-to-date")
                     return True, None
 
-                # Download in 1 MiB chunks with progress display
+                # Baixa em blocos de 1 MiB, exibindo o progresso
                 block = 1024 * 1024
                 downloaded = 0
                 with open(dest, "wb") as f:
@@ -90,12 +90,12 @@ def download_file(url, out_dir=".", backup_url=None):
         except requests.RequestException as exc:
             return False, exc
 
-    # Try main URL first
+    # Tenta primeiro a URL principal
     success, primary_error = try_download(url)
     if success:
         return dest
 
-    # Try backup URL if provided
+    # Tenta a URL reserva, se houver
     backup_error = None
     if backup_url:
         print(f"Primary URL ({url}) failed.\nTrying backup URL ({backup_url})...")

@@ -14,9 +14,9 @@ def get_device(enable_tensor_cores=True):
 
         if enable_tensor_cores:
             major, minor = map(int, torch.__version__.split(".")[:2])
-            # PyTorch 2.9 and 2.10 still read the legacy TF32 setting in torch.compile.
-            # See https://github.com/pytorch/pytorch/issues/166387
-            # and https://github.com/rasbt/reasoning-from-scratch/issues/256
+            # O PyTorch 2.9 e 2.10 ainda leem a configuração legada de TF32 no torch.compile.
+            # Veja https://github.com/pytorch/pytorch/issues/166387
+            # e https://github.com/rasbt/reasoning-from-scratch/issues/256
             if (major, minor) >= (2, 11):
                 torch.backends.cuda.matmul.fp32_precision = "tf32"
                 torch.backends.cudnn.conv.fp32_precision = "tf32"
@@ -48,7 +48,7 @@ def generate_text_basic(model, token_ids, max_new_tokens, eos_token_id=None):
         out = model(token_ids)[:, -1]
         next_token = torch.argmax(out, dim=-1, keepdim=True)
 
-        # Stop if all sequences in the batch have generated EOS
+        # Para se todas as sequências do batch tiverem gerado EOS
         if (eos_token_id is not None
                 and next_token.item() == eos_token_id):
             break
@@ -57,10 +57,10 @@ def generate_text_basic(model, token_ids, max_new_tokens, eos_token_id=None):
     return token_ids[:, input_length:]
 
 
-# Previously, chapter 2 used a non-streaming function, and the
-# *_stream functions were introduced in the exercises
-# While the simpler generate_text_basic_cache is not used anymore
-# it is kept here for backwards compatibility reasons
+# Antes, o capítulo 2 usava uma função sem streaming, e as
+# funções *_stream foram introduzidas nos exercícios
+# Embora a generate_text_basic_cache, mais simples, não seja mais usada,
+# ela é mantida aqui por compatibilidade com versões anteriores
 @torch.inference_mode()
 def generate_text_basic_cache(
     model,
@@ -132,7 +132,7 @@ def generate_text_basic_stream_cache(
                 and torch.all(next_token == eos_token_id)):
             break
 
-        yield next_token  # New: Yield each token as it's generated
+        yield next_token  # Novo: emite cada token conforme ele é gerado
         # token_ids = torch.cat([token_ids, next_token], dim=1)
         out = model(next_token, cache=cache)[:, -1]
 
@@ -178,7 +178,7 @@ def generate_stats(output_token_ids, tokenizer, start_time,
                           ("XPU", getattr(torch, "xpu", None))):
         if backend is not None and backend.is_available():
 
-            # Check whether we are actually using this backend
+            # Verifica se estamos de fato usando este backend
             device_type = output_token_ids.device.type
             if device_type != name.lower():
                 warnings.warn(
@@ -186,7 +186,7 @@ def generate_stats(output_token_ids, tokenizer, start_time,
                     f"{device_type}. Memory stats may be 0."
                 )
 
-            # Synchronize if supported (important for async backends)
+            # Sincroniza se houver suporte (importante para backends assíncronos)
             if hasattr(backend, "synchronize"):
                 backend.synchronize()
 

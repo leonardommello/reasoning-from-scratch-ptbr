@@ -22,29 +22,29 @@ def predict_choice(
             if letter in "ABCD":
                 pred = letter
                 break
-        if pred:  # stop as soon as a letter appears
+        if pred:  # para assim que uma letra aparecer
             break
     return pred
 
 
 def elo_ratings(vote_pairs, k_factor=32, initial_rating=1000):
-    # Initialize all models with the same base rating
+    # Inicializa todos os modelos com o mesmo rating base
     ratings = {
         model: initial_rating
         for pair in vote_pairs
         for model in pair
     }
 
-    # Update ratings after each match
+    # Atualiza os ratings após cada partida
     for winner, loser in vote_pairs:
         rating_winner, rating_loser = ratings[winner], ratings[loser]
 
-        # Expected score for the current winner given the ratings
+        # Score esperado do vencedor atual, dados os ratings
         expected_winner = 1.0 / (
             1.0 + 10 ** ((rating_loser - rating_winner) / 400.0)
         )
 
-        # k_factor determines sensitivity of rating updates
+        # k_factor determina a sensibilidade das atualizações de rating
         ratings[winner] = (
             rating_winner + k_factor * (1 - expected_winner)
         )
