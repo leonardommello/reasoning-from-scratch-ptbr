@@ -1,17 +1,17 @@
 
-# GPU Cloud Resources
+# Recursos de GPU na nuvem
 
-This section describes cloud alternatives for running the code presented in this book.
+Esta seção descreve alternativas na nuvem para rodar o código apresentado neste livro.
 
-While the code can run on conventional laptops and desktop computers without a dedicated GPU, cloud platforms with NVIDIA GPUs can substantially improve the runtime of the code, especially in chapters 5 to 7.
+Embora o código rode em notebooks e desktops convencionais sem GPU dedicada, plataformas de nuvem com GPUs NVIDIA podem melhorar substancialmente o tempo de execução do código, especialmente nos capítulos 5 a 7.
 
 &nbsp;
 
-## Using Lightning Studio
+## Usando o Lightning Studio
 
-For a smooth development experience in the cloud, I recommend the [Lightning AI Studio](https://lightning.ai/) platform, which allows users to set up a persistent environment and use both VSCode and Jupyter Lab on cloud CPUs and GPUs.
+Para uma experiência de desenvolvimento tranquila na nuvem, recomendo a plataforma [Lightning AI Studio](https://lightning.ai/), que permite configurar um ambiente persistente e usar tanto o VSCode quanto o Jupyter Lab em CPUs e GPUs na nuvem.
 
-Once you start a new Studio, you can open the terminal and execute the following setup steps to clone the repository and install the dependencies:
+Assim que você iniciar um novo Studio, pode abrir o terminal e executar os seguintes passos de configuração para clonar o repositório e instalar as dependências:
 
 ```bash
 git clone https://github.com/rasbt/reasoning-from-scratch.git
@@ -19,32 +19,32 @@ cd reasoning-from-scratch
 pip install -r requirements.txt
 ```
 
-(In contrast to Google Colab, these only need to be executed once since the Lightning AI Studio environments are persistent, even if you switch between CPU and GPU machines.)
+(Diferente do Google Colab, isso só precisa ser executado uma vez, já que os ambientes do Lightning AI Studio são persistentes, mesmo que você alterne entre máquinas de CPU e GPU.)
 
-Then, navigate to the Python script or Jupyter Notebook you want to run. Optionally, you can also easily connect a GPU to accelerate the code's runtime, for example, when you are pretraining the LLM in chapter 5 or finetuning it in chapters 6 and 7.
+Depois, navegue até o script Python ou o Jupyter Notebook que você quer rodar. Opcionalmente, você também pode conectar facilmente uma GPU para acelerar o tempo de execução do código — por exemplo, ao fazer o pretraining do LLM no capítulo 5 ou o fine-tuning nos capítulos 6 e 7.
 
 <img src="https://sebastianraschka.com/images/LLMs-from-scratch-images/setup/README/studio.webp" alt="1" width="700">
 
 &nbsp;
 
-## Using Google Colab
+## Usando o Google Colab
 
-To use a Google Colab environment in the cloud, head over to [https://colab.research.google.com/](https://colab.research.google.com/) and open the respective chapter notebook from the GitHub menu or by dragging the notebook into the *Upload* field as shown in the figure below.
+Para usar um ambiente do Google Colab na nuvem, acesse [https://colab.research.google.com/](https://colab.research.google.com/) e abra o notebook do capítulo desejado pelo menu do GitHub ou arrastando o notebook para o campo *Upload*, como mostrado na figura abaixo.
 
 <img src="https://sebastianraschka.com/images/LLMs-from-scratch-images/setup/README/colab_1.webp" alt="1" width="700">
 
 
-Also make sure you upload the relevant files (dataset files and .py files the notebook is importing from) to the Colab environment as well, as shown below.
+Certifique-se também de enviar os arquivos relevantes (arquivos de dataset e arquivos .py dos quais o notebook importa) para o ambiente do Colab, conforme mostrado abaixo.
 
 <img src="https://sebastianraschka.com/images/LLMs-from-scratch-images/setup/README/colab_2.webp" alt="2" width="700">
 
 
-You can optionally run the code on a GPU by changing the *Runtime* as illustrated in the figure below.
+Opcionalmente, você pode rodar o código em uma GPU alterando o *Runtime*, como ilustrado na figura abaixo.
 
 <img src="https://sebastianraschka.com/images/LLMs-from-scratch-images/setup/README/colab_3.webp" alt="3" width="700">
 
 
 &nbsp;
-## Questions?
+## Dúvidas?
 
-If you have any questions, please don't hesitate to reach out via the [Discussions](https://github.com/rasbt/reasoning-from-scratch/discussions) forum in this GitHub repository.
+Se você tiver qualquer dúvida, não hesite em entrar em contato pelo fórum de [Discussions](https://github.com/rasbt/reasoning-from-scratch/discussions) neste repositório do GitHub.
