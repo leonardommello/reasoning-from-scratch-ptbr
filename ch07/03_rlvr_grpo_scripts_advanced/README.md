@@ -1,57 +1,57 @@
-# Chapter 7: Improving Policy Optimization in Reinforcement Learning
+# Capítulo 7: Melhorando a otimização de policy em aprendizado por reforço
 
-This section contains advanced GRPO scripts that extend the chapter 6 implementation with additional tracking, stabilization, and reward-modeling variants.
+Esta seção contém scripts avançados de GRPO que estendem a implementação do capítulo 6 com acompanhamento adicional, estabilização e variantes de modelagem de reward.
 
-
-&nbsp;
-## Scripts Overview
 
 &nbsp;
-### Main Scripts
+## Visão geral dos scripts
 
-- `7_3_plus_tracking.py` (*7.3 Tracking more advanced GRPO performance metrics*): Tracks additional performance metrics (advantage statistics and entropy)
-- `7_4_plus_clip_ratio.py` (*7.4 Stabilizing sequence-level GRPO using clipped policy ratios*): Like above but computes policy gradient loss with clipped policy ratios
-- `7_5_plus_kl.py` (*7.5 Controlling how much the model changes with a KL term*): Like above but adds a KL loss term
-- `7_6_plus_format_reward.py` (*7.6 Adding an explicit format reward*): Like above but adds an additional format reward for `<think>` tokens (a key difference to the other scripts is that this is applied to the reasoning instead of base model since it is already familiar with these tokens as discussed in the main chapter)
+&nbsp;
+### Scripts principais
+
+- `7_3_plus_tracking.py` (*7.3 Acompanhando métricas de desempenho mais avançadas do GRPO*): acompanha métricas adicionais de desempenho (estatísticas de advantage e entropia)
+- `7_4_plus_clip_ratio.py` (*7.4 Estabilizando o GRPO em nível de sequência com policy ratios clipados*): como o anterior, mas calcula a loss de policy gradient com policy ratios clipados
+- `7_5_plus_kl.py` (*7.5 Controlando o quanto o modelo muda com um termo de KL*): como o anterior, mas adiciona um termo de KL loss
+- `7_6_plus_format_reward.py` (*7.6 Adicionando um format reward explícito*): como o anterior, mas adiciona um format reward para tokens `<think>` (uma diferença importante em relação aos outros scripts é que este é aplicado ao modelo de raciocínio, e não ao modelo base, já que ele já é familiarizado com esses tokens, como discutido no capítulo principal)
 
 <br>
 
 &nbsp;
-### GRPO Tips & Tricks Bonus Scripts
+### Scripts bônus de dicas e truques de GRPO
 
-Since GRPO was first published in April 2024 ([DeepSeekMath](https://arxiv.org/abs/2402.03300)) and became popular in January 2025 ([DeepSeek-R1](https://arxiv.org/abs/2501.12948)), many improvements have been suggested in the literature. Some for the most notable ones are listed below:
+Desde que o GRPO foi publicado pela primeira vez, em abril de 2024 ([DeepSeekMath](https://arxiv.org/abs/2402.03300)), e se popularizou em janeiro de 2025 ([DeepSeek-R1](https://arxiv.org/abs/2501.12948)), muitas melhorias foram sugeridas na literatura. Algumas das mais notáveis estão listadas abaixo:
 
-1. Zero gradient signal filtering ([DAPO by Yu et al., 2025](https://arxiv.org/abs/2503.14476))
-2. Active sampling (DAPO)
-3. Token-level loss (DAPO)
-4. No KL loss (DAPO and [Dr. GRPO by Liu et al., 2025](https://arxiv.org/abs/2503.20783))
+1. Filtragem de sinal de gradiente zero ([DAPO, de Yu et al., 2025](https://arxiv.org/abs/2503.14476))
+2. Amostragem ativa (DAPO)
+3. Loss em nível de token (DAPO)
+4. Sem KL loss (DAPO e [Dr. GRPO, de Liu et al., 2025](https://arxiv.org/abs/2503.20783))
 5. Clip higher (DAPO)
-6. Truncated importance sampling ([Yao et al., 2025](https://fengyao.notion.site/off-policy-rl))
-7. No standard deviation normalization (Dr. GRPO)
-8. KL tuning with domain-specific KL strengths; zero for math ([DeepSeek V3.2](https://arxiv.org/abs/2512.02556)
-9. Reweighted KL (DeepSeek V3.2)
-10. Off-policy sequence masking (DeepSeek V3.2)
-11. Keep sampling mask for top-p / top-k (DeepSeek V3.2)
-12. Keep original GRPO advantage normalization (DeepSeek V3.2)
-13. Per-reward group-wise normalization before aggregation ([GDPO by Liu et al., 2026](https://arxiv.org/abs/2601.05242))
-14. Sequence-level importance sampling and clipping ([GSPO by Zheng et al., 2025](https://arxiv.org/abs/2507.18071))
-15. Clip importance-sampling weights rather than token updates ([CISPO by MiniMax et al., 2025](https://arxiv.org/abs/2506.13585))
+6. Importance sampling truncado ([Yao et al., 2025](https://fengyao.notion.site/off-policy-rl))
+7. Sem normalização por desvio padrão (Dr. GRPO)
+8. Ajuste de KL com forças específicas por domínio; zero para matemática ([DeepSeek V3.2](https://arxiv.org/abs/2512.02556)
+9. KL reponderado (DeepSeek V3.2)
+10. Máscara de sequência off-policy (DeepSeek V3.2)
+11. Manter a máscara de amostragem para top-p / top-k (DeepSeek V3.2)
+12. Manter a normalização de advantage original do GRPO (DeepSeek V3.2)
+13. Normalização por grupo, por reward, antes da agregação ([GDPO, de Liu et al., 2026](https://arxiv.org/abs/2601.05242))
+14. Importance sampling e clipping em nível de sequência ([GSPO, de Zheng et al., 2025](https://arxiv.org/abs/2507.18071))
+15. Clipar os pesos de importance sampling em vez das atualizações de token ([CISPO, de MiniMax et al., 2025](https://arxiv.org/abs/2506.13585))
 
-(I am planning to do a more detailed write-up one day after finishing the main contents.)
+(Pretendo escrever um texto mais detalhado sobre isso um dia, depois de terminar o conteúdo principal.)
 
 <br>
 
-The following scripts implement some of these improvements:
+Os scripts a seguir implementam algumas dessas melhorias:
 
-- `7_7_improvements/olmo3_style.py`: This script implements improvements 1-7 similar to [Olmo 3](https://arxiv.org/abs/2512.13961) on top of [7_5_plus_kl.py](7_5_plus_kl.py)
+- `7_7_improvements/olmo3_style.py`: implementa as melhorias 1 a 7, de forma parecida com o [Olmo 3](https://arxiv.org/abs/2512.13961), em cima do [7_5_plus_kl.py](7_5_plus_kl.py)
 
-- `7_7_improvements/deepseek_v32_style.py`: This script implements improvements 8-12 similar to [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556) on top of [7_5_plus_kl.py](7_5_plus_kl.py)
+- `7_7_improvements/deepseek_v32_style.py`: implementa as melhorias 8 a 12, de forma parecida com o [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556), em cima do [7_5_plus_kl.py](7_5_plus_kl.py)
 
-- `7_7_improvements/gdpo.py`: Implements [GDPO](https://arxiv.org/abs/2601.05242) on top of [7_6_plus_format_reward.py](7_6_plus_format_reward.py) (since GDPO is a tweak for multiple rewards)
+- `7_7_improvements/gdpo.py`: implementa o [GDPO](https://arxiv.org/abs/2601.05242) em cima do [7_6_plus_format_reward.py](7_6_plus_format_reward.py) (já que o GDPO é um ajuste para múltiplos rewards)
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
