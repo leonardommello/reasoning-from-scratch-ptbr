@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build a Reasoning Model (From Scratch) — tradução pt-BR</title>
+<meta name="description" content="Tradução comunitária não oficial, para português do Brasil, do repositório de código Apache-2.0 de Sebastian Raschka.">
+<style>
+  :root{
+    --bg:#fbfaf8; --panel:#ffffff; --ink:#1c1a17; --muted:#5d5850;
+    --line:#e3ded6; --accent:#8a4b2a; --accent-soft:#f3e9e2;
+    --warn-bg:#fdf6e6; --warn-line:#e0cfa0; --warn-ink:#5c4813;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#14120f; --panel:#1c1917; --ink:#ece7e0; --muted:#a49c91;
+      --line:#2e2924; --accent:#d99a6c; --accent-soft:#2a211b;
+      --warn-bg:#241d0e; --warn-line:#4d3f1c; --warn-ink:#e8d5a3;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14120f; --panel:#1c1917; --ink:#ece7e0; --muted:#a49c91;
+    --line:#2e2924; --accent:#d99a6c; --accent-soft:#2a211b;
+    --warn-bg:#241d0e; --warn-line:#4d3f1c; --warn-ink:#e8d5a3;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px}
+  header{padding:56px 0 32px; border-bottom:1px solid var(--line)}
+  .kicker{
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin:0 0 12px;
+  }
+  h1{font-size:clamp(28px,5vw,40px); line-height:1.15; margin:0 0 14px; letter-spacing:-.02em}
+  .sub{color:var(--muted); font-size:17px; margin:0; max-width:62ch}
+  .notice{
+    margin:28px 0 0; padding:16px 18px; border-radius:10px;
+    background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
+    font-size:14.5px; line-height:1.6;
+  }
+  .notice strong{font-weight:700}
+  .notice a{color:inherit; text-decoration:underline; text-underline-offset:2px}
+  section{padding:40px 0; border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:0}
+  h2{font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 20px; font-weight:700}
+  .grid{display:grid; gap:10px}
+  .row{
+    display:flex; align-items:baseline; gap:14px; padding:13px 16px;
+    background:var(--panel); border:1px solid var(--line); border-radius:9px;
+    text-decoration:none; color:inherit; transition:border-color .15s, transform .15s;
+  }
+  .row:hover{border-color:var(--accent); transform:translateX(2px)}
+  .num{
+    font:600 12px/1 var(--mono); color:var(--accent);
+    background:var(--accent-soft); padding:5px 8px; border-radius:5px;
+    flex:0 0 auto; min-width:38px; text-align:center;
+  }
+  .rowbody{flex:1 1 auto; min-width:0}
+  .rowtitle{font-weight:600; font-size:15.5px; display:block}
+  .rowmeta{color:var(--muted); font-size:13px; margin-top:2px; display:block}
+  .links{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+  .pill{
+    font:500 12.5px/1 inherit; color:var(--muted); text-decoration:none;
+    border:1px solid var(--line); padding:6px 11px; border-radius:999px; background:var(--panel);
+  }
+  .pill:hover{border-color:var(--accent); color:var(--accent)}
+  p{margin:0 0 14px; max-width:68ch}
+  .muted{color:var(--muted); font-size:14.5px}
+  code{font-family:var(--mono); font-size:.9em; background:var(--accent-soft); padding:2px 6px; border-radius:4px}
+  table{width:100%; border-collapse:collapse; font-size:14.5px; margin:0}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:9px; background:var(--panel)}
+  th,td{text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:700}
+  tr:last-child td{border-bottom:0}
+  footer{padding:36px 0 64px; color:var(--muted); font-size:13.5px}
+  footer a{color:var(--accent)}
+  .toggle{
+    position:fixed; top:16px; right:16px; background:var(--panel); color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:7px 13px;
+    font:500 12.5px/1 inherit; cursor:pointer;
+  }
+  .toggle:hover{border-color:var(--accent); color:var(--accent)}
+</style>
+</head>
+<body>
+<button class="toggle" id="t">tema</button>
+
+<div class="wrap">
+<header>
+  <p class="kicker">Tradução comunitária · pt-BR</p>
+  <h1>Build a Reasoning Model (From Scratch)</h1>
+  <p class="sub">
+    Tradução para português do Brasil do repositório de código de
+    <a href="https://sebastianraschka.com" style="color:var(--accent)">Sebastian Raschka</a>:
+    notebooks, guias de instalação e documentação para construir um modelo de raciocínio
+    sobre um LLM base, do zero.
+  </p>
+
+  <div class="notice">
+    <strong>Leia antes de usar.</strong> Este site <strong>não é</strong> o livro, não é uma
+    publicação oficial da Manning e não substitui a leitura da obra. É uma tradução
+    não oficial, feita pela comunidade, do
+    <a href="https://github.com/rasbt/reasoning-from-scratch">repositório de código</a>
+    licenciado sob Apache License 2.0 (<code>Copyright 2025-2026 Sebastian Raschka</code>).
+    O texto do livro impresso não faz parte do repositório e não é reproduzido aqui.
+    Se este material for útil para você, <a href="https://mng.bz/lZ5B">compre o livro</a> —
+    é ele que sustenta o trabalho original.
+  </div>
+</header>
+
+<section>
+  <h2>Capítulos</h2>
+  <div class="grid">
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch01/README.md">
+      <span class="num">01</span>
+      <span class="rowbody">
+        <span class="rowtitle">Entendendo modelos de raciocínio</span>
+        <span class="rowmeta">Sem código neste capítulo</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch02/01_main-chapter-code/ch02_main.ipynb">
+      <span class="num">02</span>
+      <span class="rowbody">
+        <span class="rowtitle">Gerando texto com um LLM pré-treinado</span>
+        <span class="rowmeta">Instalação, tokenizer, KV caching, <code>torch.compile</code></span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch03/01_main-chapter-code/ch03_main.ipynb">
+      <span class="num">03</span>
+      <span class="rowbody">
+        <span class="rowtitle">Avaliando modelos de raciocínio</span>
+        <span class="rowmeta">Verificador de matemática, MATH-500, normalização de respostas</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch04/01_main-chapter-code/ch04_main.ipynb">
+      <span class="num">04</span>
+      <span class="rowbody">
+        <span class="rowtitle">Melhorando o raciocínio com inference-time scaling</span>
+        <span class="rowmeta">Chain-of-thought, temperature, top-p, self-consistency</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch05/01_main-chapter-code/ch05_main.ipynb">
+      <span class="num">05</span>
+      <span class="rowbody">
+        <span class="rowtitle">Inference-time scaling via self-refinement</span>
+        <span class="rowmeta">Scores heurísticos, log-probabilidades, loop de refinamento</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch06/01_main-chapter-code/ch06_main.ipynb">
+      <span class="num">06</span>
+      <span class="rowbody">
+        <span class="rowtitle">Treinando modelos de raciocínio com aprendizado por reforço</span>
+        <span class="rowmeta">RLVR, GRPO, rollouts, advantages, loop de treinamento</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch07/01_main-chapter-code/ch07_main.ipynb">
+      <span class="num">07</span>
+      <span class="rowbody">
+        <span class="rowtitle">Melhorando o GRPO para aprendizado por reforço</span>
+        <span class="rowmeta">Métricas, policy ratios clipados, termo de KL, format reward</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch08/01_main-chapter-code/ch08_main.ipynb">
+      <span class="num">08</span>
+      <span class="rowbody">
+        <span class="rowtitle">Destilando modelos de raciocínio para raciocínio eficiente</span>
+        <span class="rowmeta">Destilação hard e soft, dataset do professor, cross-entropy</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>Apêndices</h2>
+  <div class="grid">
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/chC/01_main-chapter-code/chC_main.ipynb">
+      <span class="num">C</span>
+      <span class="rowbody">
+        <span class="rowtitle">Código-fonte do LLM Qwen3</span>
+        <span class="rowmeta">RMSNorm, feed forward, RoPE, GQA, bloco transformer, KV cache</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/chD/chD_main.ipynb">
+      <span class="num">D</span>
+      <span class="rowbody">
+        <span class="rowtitle">Usando LLMs maiores</span>
+        <span class="rowmeta">Configurações densas de 1.7B a 32B, download de checkpoints</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/chE/chE_main.ipynb">
+      <span class="num">E</span>
+      <span class="rowbody">
+        <span class="rowtitle">Batching e execução orientada a throughput</span>
+        <span class="rowmeta">Padding, attention masks, versões em batch dos scripts</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/chF/01_main-chapter-code/chF_main.ipynb">
+      <span class="num">F</span>
+      <span class="rowbody">
+        <span class="rowtitle">Abordagens comuns para avaliação de LLMs</span>
+        <span class="rowmeta">MMLU, verificadores, leaderboards, LLM-as-a-judge</span>
+      </span>
+    </a>
+    <a class="row" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/chG">
+      <span class="num">G</span>
+      <span class="rowbody">
+        <span class="rowtitle">Construindo uma interface de chat</span>
+        <span class="rowmeta">Código da interface</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>Soluções dos exercícios</h2>
+  <p class="muted">Um notebook de soluções por capítulo, traduzido junto com o capítulo correspondente.</p>
+  <div class="links">
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch02/01_main-chapter-code/ch02_exercise-solutions.ipynb">Cap. 2</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch03/01_main-chapter-code/ch03_exercise-solutions.ipynb">Cap. 3</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch04/01_main-chapter-code/ch04_exercise-solutions.ipynb">Cap. 4</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch05/01_main-chapter-code/ch05_exercise-solutions.ipynb">Cap. 5</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch06/01_main-chapter-code/ch06_exercise-solutions.ipynb">Cap. 6</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch07/01_main-chapter-code/ch07_exercise-solutions.ipynb">Cap. 7</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch08/01_main-chapter-code/ch08_exercise-solutions.ipynb">Cap. 8</a>
+  </div>
+</section>
+
+<section>
+  <h2>Começando</h2>
+  <p>
+    O código roda em hardware de consumo. Os capítulos 2 a 4 funcionam bem em CPU;
+    para os capítulos 5 a 7, uma GPU é recomendada.
+  </p>
+  <div class="links">
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch02/02_setup-tips/python-instructions.md">Instalação do Python</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/ch02/02_setup-tips/gpu-instructions.md">GPU na nuvem</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/troubleshooting.md">Solução de problemas</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr/blob/traducao-pt-br/GLOSSARIO-TRADUCAO.md">Glossário da tradução</a>
+    <a class="pill" href="https://github.com/leonardommello/reasoning-from-scratch-ptbr">Repositório</a>
+  </div>
+</section>
+
+<section>
+  <h2>Convenções da tradução</h2>
+  <p class="muted">
+    O jargão técnico consolidado permanece em inglês, seguindo o uso corrente da
+    comunidade brasileira de machine learning. O código, os nomes de funções e as
+    mensagens verificadas por testes automatizados não foram alterados.
+  </p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Mantido em inglês</th><th>Traduzido</th></tr></thead>
+      <tbody>
+        <tr><td><code>token</code>, <code>prompt</code>, <code>reward</code>, <code>rollout</code></td><td>raciocínio, treinamento, pesos, camada</td></tr>
+        <tr><td><code>checkpoint</code>, <code>fine-tuning</code>, <code>batch</code>, <code>loss</code></td><td>destilação, aprendizado por reforço, verificador</td></tr>
+        <tr><td><code>inference-time scaling</code>, <code>self-consistency</code></td><td>acurácia, avaliação, exercício, apêndice</td></tr>
+        <tr><td><code>GRPO</code>, <code>RLVR</code>, <code>KV cache</code>, <code>policy</code></td><td>modelo professor, modelo aluno</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>
+    Obra derivada de
+    <a href="https://github.com/rasbt/reasoning-from-scratch">rasbt/reasoning-from-scratch</a>,
+    <code>Copyright 2025-2026 Sebastian Raschka</code>, licenciada sob
+    <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.
+    Modificação: tradução do texto para português do Brasil; o código permanece inalterado.
+    Sem vínculo com a Manning Publications.
+  </p>
+  <p>
+    <a href="https://mng.bz/lZ5B">Comprar o livro na Manning</a> ·
+    <a href="https://github.com/rasbt/reasoning-from-scratch">Repositório original</a>
+  </p>
+</footer>
+</div>
+
+<script>
+  const b=document.documentElement, t=document.getElementById('t');
+  const stored=localStorage.getItem('tema');
+  if(stored) b.setAttribute('data-theme',stored);
+  t.addEventListener('click',()=>{
+    const dark=b.getAttribute('data-theme')==='dark'
+      || (!b.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
+    const next=dark?'light':'dark';
+    b.setAttribute('data-theme',next);
+    localStorage.setItem('tema',next);
+  });
+</script>
+</body>
+</html>
