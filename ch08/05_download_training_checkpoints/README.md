@@ -1,29 +1,29 @@
-# Downloading and Using Training Checkpoints
+# Baixando e usando checkpoints de treinamento
 
-This folder explains how to download and use the chapter 8 distillation checkpoints from the Hugging Face model hub at [https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints).
+Esta pasta explica como baixar e usar os checkpoints de destilação do capítulo 8 do model hub do Hugging Face, em [https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints).
 
-The checkpoints are plain PyTorch `state_dict` files for the `reasoning_from_scratch` package. They are not Hugging Face Transformers checkpoints.
+Os checkpoints são arquivos `state_dict` puros do PyTorch, para o pacote `reasoning_from_scratch`. Não são checkpoints do Hugging Face Transformers.
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
 &nbsp;
-## Available Checkpoint Folders
+## Pastas de checkpoint disponíveis
 
-- `ch08_distill_deepseek_r1`: the 3 DeepSeek-R1 distillation checkpoints used for rows 3-5 in [`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb)
-- `ch08_distill_qwen3_235b_a22b`: the 3 Qwen3 235B A22B distillation checkpoints used for rows 6-8 in [`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb)
+- `ch08_distill_deepseek_r1`: os 3 checkpoints de destilação do DeepSeek-R1 usados nas linhas 3 a 5 do [`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb)
+- `ch08_distill_qwen3_235b_a22b`: os 3 checkpoints de destilação do Qwen3 235B A22B usados nas linhas 6 a 8 do [`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb)
 
-The checkpoints are hosted in:
+Os checkpoints estão hospedados em:
 
 - [rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints)
 
 &nbsp;
-## Downloading a Checkpoint
+## Baixando um checkpoint
 
-Use `download_qwen3_distill_checkpoints(...)` from [`reasoning_from_scratch.qwen3`](https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py):
+Use `download_qwen3_distill_checkpoints(...)` de [`reasoning_from_scratch.qwen3`](https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py):
 
 ```python
 from reasoning_from_scratch.qwen3 import download_qwen3_distill_checkpoints
@@ -36,18 +36,18 @@ checkpoint_path = download_qwen3_distill_checkpoints(
 ```
 
 &nbsp;
-## Which Tokenizer to Use
+## Qual tokenizer usar
 
-Use the reasoning tokenizer for:
+Use o tokenizer de raciocínio para:
 
 - `ch08_distill_deepseek_r1`
 - `ch08_distill_qwen3_235b_a22b`
 
 &nbsp;
 
-## Usage Example
+## Exemplo de uso
 
-The example below downloads a checkpoint, downloads the matching tokenizer, loads the model, and generates text with `generate_text_basic_stream_cache` from chapter 2:
+O exemplo abaixo baixa um checkpoint, baixa o tokenizer correspondente, carrega o modelo e gera texto com o `generate_text_basic_stream_cache` do capítulo 2:
 
 ```python
 from pathlib import Path
@@ -102,9 +102,9 @@ for token in generate_text_basic_stream_cache(
 ```
 
 &nbsp;
-## Qwen3 Example
+## Exemplo com Qwen3
 
-For `ch08_distill_qwen3_235b_a22b`, use the same helper with the other `distill_type`:
+Para `ch08_distill_qwen3_235b_a22b`, use a mesma função auxiliar com o outro `distill_type`:
 
 ```python
 from reasoning_from_scratch.qwen3 import download_qwen3_distill_checkpoints
@@ -117,15 +117,15 @@ download_qwen3_distill_checkpoints(
 ```
 
 &nbsp;
-## Available Steps
+## Steps disponíveis
 
-Available saved steps for `deepseek_r1`:
+Steps salvos disponíveis para `deepseek_r1`:
 
 - `06682`
 - `13364`
 - `20046`
 
-Available saved steps for `qwen3_235b_a22b`:
+Steps salvos disponíveis para `qwen3_235b_a22b`:
 
 - `05746`
 - `11492`

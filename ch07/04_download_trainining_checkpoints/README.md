@@ -1,31 +1,31 @@
-# Downloading and Using Training Checkpoints
+# Baixando e usando checkpoints de treinamento
 
-This folder explains how to download and use the chapter 7 training checkpoints from Hugging Face at [https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints).
+Esta pasta explica como baixar e usar os checkpoints de treinamento do capítulo 7 do Hugging Face, em [https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints).
 
-The checkpoints are plain PyTorch `state_dict` files for the `reasoning_from_scratch` package. They are not Hugging Face Transformers checkpoints.
+Os checkpoints são arquivos `state_dict` puros do PyTorch, para o pacote `reasoning_from_scratch`. Não são checkpoints do Hugging Face Transformers.
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
 &nbsp;
-## Available Checkpoint Folders
+## Pastas de checkpoint disponíveis
 
-- `7_3_plus_tracking`: GRPO checkpoints with additional metric tracking
-- `7_4_plus_clip_ratio`: GRPO checkpoints with clipped policy ratios
-- `7_5_plus_kl`: GRPO checkpoints with a KL term
-- `7_6_plus_format_reward`: GRPO checkpoints with an explicit format reward for `<think>` tags
+- `7_3_plus_tracking`: checkpoints de GRPO com acompanhamento adicional de métricas
+- `7_4_plus_clip_ratio`: checkpoints de GRPO com policy ratios clipados
+- `7_5_plus_kl`: checkpoints de GRPO com um termo de KL
+- `7_6_plus_format_reward`: checkpoints de GRPO com um format reward explícito para tags `<think>`
 
-The checkpoints are hosted in:
+Os checkpoints estão hospedados em:
 
 - [rasbt/qwen3-from-scratch-grpo-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints)
 
 &nbsp;
-## Downloading a Checkpoint
+## Baixando um checkpoint
 
-Use `download_qwen3_grpo_checkpoints(...)` from [`reasoning_from_scratch.qwen3`](https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py):
+Use `download_qwen3_grpo_checkpoints(...)` de [`reasoning_from_scratch.qwen3`](https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py):
 
 ```python
 from reasoning_from_scratch.qwen3 import download_qwen3_grpo_checkpoints
@@ -38,24 +38,24 @@ checkpoint_path = download_qwen3_grpo_checkpoints(
 ```
 
 &nbsp;
-## Which Tokenizer to Use
+## Qual tokenizer usar
 
-Use the base tokenizer for:
+Use o tokenizer base para:
 
 - `7_3_plus_tracking`
 - `7_4_plus_clip_ratio`
 - `7_5_plus_kl`
 
-Use the reasoning tokenizer for:
+Use o tokenizer de raciocínio para:
 
 - `7_6_plus_format_reward`
 
-The reason is that `7_6_plus_format_reward` was trained from the reasoning model and expects the reasoning chat formatting.
+O motivo é que o `7_6_plus_format_reward` foi treinado a partir do modelo de raciocínio e espera a formatação de chat do modelo de raciocínio.
 
 &nbsp;
-## Usage Example
+## Exemplo de uso
 
-The example below downloads a checkpoint, downloads the matching tokenizer, loads the model, and generates text with `generate_text_basic_stream_cache` from chapter 2:
+O exemplo abaixo baixa um checkpoint, baixa o tokenizer correspondente, carrega o modelo e gera texto com o `generate_text_basic_stream_cache` do capítulo 2:
 
 ```python
 from pathlib import Path
@@ -105,9 +105,9 @@ for token in generate_text_basic_stream_cache(
 ```
 
 &nbsp;
-## Format-Reward Example
+## Exemplo com format reward
 
-For `7_6_plus_format_reward`, switch to the reasoning tokenizer:
+Para o `7_6_plus_format_reward`, troque para o tokenizer de raciocínio:
 
 ```python
 from pathlib import Path
@@ -129,9 +129,9 @@ tokenizer = Qwen3Tokenizer(
 ```
 
 &nbsp;
-## Chapter 6 Example
+## Exemplo do capítulo 6
 
-The same helper also supports the original chapter 6 no-KL checkpoint:
+A mesma função auxiliar também suporta o checkpoint original do capítulo 6, sem KL:
 
 ```python
 from reasoning_from_scratch.qwen3 import download_qwen3_grpo_checkpoints
@@ -140,17 +140,17 @@ download_qwen3_grpo_checkpoints(grpo_type="no_kl", step="00050", out_dir="qwen3"
 ```
 
 &nbsp;
-## Available Checkpoints
+## Checkpoints disponíveis
 
-Section mapping:
+Correspondência com as seções:
 
-- `no_kl`: chapter 6 baseline from the original no-KL GRPO setup
-- `tracking`: section 7.3 in the main chapter
-- `clip_ratio`: section 7.4 in the main chapter
-- `kl`: section 7.5 in the main chapter
-- `format_reward`: section 7.6 in the main chapter
+- `no_kl`: baseline do capítulo 6, da configuração original de GRPO sem KL
+- `tracking`: seção 7.3 do capítulo principal
+- `clip_ratio`: seção 7.4 do capítulo principal
+- `kl`: seção 7.5 do capítulo principal
+- `format_reward`: seção 7.6 do capítulo principal
 
-Available saved steps:
+Steps salvos disponíveis:
 
 - `no_kl`: `00050`, `00100`, `00500`, `01000`, `01500`, `03000`, `05000`, `09000`
 - `tracking`: `00050`, `00100`, `00150`, `00200`, `00250`, `00300`, `00350`, `00400`, `00450`, `00500`
