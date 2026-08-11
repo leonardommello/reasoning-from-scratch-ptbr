@@ -1,50 +1,50 @@
 
-# MMLU Benchmarking
+# Benchmarking com MMLU
 
-This bonus material implements three different methods for evaluating models on MMLU. 
-- Method 1 is meant as an intuitive introduction
-- Method 2 is the most widely used method in practice
-- Method 3 is a more robust method that is better suited for reasoning models
+Este material complementar implementa três métodos diferentes para avaliar modelos no MMLU.
+- O método 1 serve como uma introdução intuitiva
+- O método 2 é o mais usado na prática
+- O método 3 é um método mais robusto, mais adequado para modelos de raciocínio
 
-- Please note that the code loads the [MMLU dataset](https://huggingface.co/datasets/cais/mmlu) from the Hugging Face model hub. So, you need to install the `datasets` Python library before running the code:
+- Note que o código carrega o [dataset MMLU](https://huggingface.co/datasets/cais/mmlu) do model hub do Hugging Face. Assim, você precisa instalar a biblioteca Python `datasets` antes de rodar o código:
 
 ```python
 pip install datasets
 ```
 
-or
+ou
 
 ```python
 uv add datasets
 ```
 
-- In the following sections, we apply the MMLU evaluation methods to  (`"high_school_mathematics"`)
+- Nas seções a seguir, aplicamos os métodos de avaliação do MMLU ao (`"high_school_mathematics"`)
 
-- Note that there are many other interesting subsets; this one is chosen for simplicity and efficiency; you can use, for example
+- Note que há muitos outros subconjuntos interessantes; este foi escolhido por simplicidade e eficiência; você pode usar, por exemplo
 
-  - Use `--subsets list` to list other available subsets 
+  - Use `--subsets list` para listar outros subconjuntos disponíveis
 
-  - Use, for example, `--subsets "astronomy,high_school_mathematics"` to select multiple subsets
+  - Use, por exemplo, `--subsets "astronomy,high_school_mathematics"` para selecionar vários subconjuntos
 
-  - Use `--subsets "all"` to evaluate on all subsets
+  - Use `--subsets "all"` para avaliar em todos os subconjuntos
 
-(Not that for simplicity and code readability, we focus on a zero-shot, as opposed to a 5-shot, setting.)
+(Note que, por simplicidade e legibilidade do código, focamos em um cenário zero-shot, e não 5-shot.)
 
 <br>
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
 &nbsp;
 
-## Method 1: MMLU letter matching
+## Método 1: correspondência de letra no MMLU
 
-- We let the model generate the answer
-- We extract the first generated A/B/C/D letter and compare it to the correct answer
-- This is the most intuitive method, but the downside is that the model may not respond with a letter A/B/C/D
+- Deixamos o modelo gerar a resposta
+- Extraímos a primeira letra A/B/C/D gerada e a comparamos com a resposta correta
+- Este é o método mais intuitivo, mas a desvantagem é que o modelo pode não responder com uma letra A/B/C/D
 
 <br>
 
@@ -88,11 +88,11 @@ MMLU letter accuracy: 57/270 = 21.11% in 43.6s
 
 &nbsp;
 
-## Method 2: Log-probability scoring
+## Método 2: pontuação por log-probabilidade
 
-- We run the prompt through the model and get log-probabilities (log-probs) for the next token (see chapter 4 for log-probs discussion)
-- For each letter choice, we then compute which token ID would appear first if we appended that letter
-- Then, we compare those four log-probs and pick the highest one (max)
+- Passamos o prompt pelo modelo e obtemos as log-probabilidades (log-probs) do próximo token (veja o capítulo 4 para a discussão sobre log-probs)
+- Para cada opção de letra, calculamos então qual ID de token apareceria primeiro se acrescentássemos aquela letra
+- Em seguida, comparamos essas quatro log-probs e escolhemos a maior (max)
 
 <br>
 
@@ -136,12 +136,12 @@ MMLU letter accuracy (log-prob): 57/270 = 21.11% in 22.4s
 
 &nbsp;
 
-## Method 3: Teacher forcing
+## Método 3: teacher forcing
 
-- Instead of looking up the log-prob of each of the letters A/B/C/D, a more robust scoring (specifically for reasoning models), is to feed the letter along with the complete answer string
-- For our example, the answer strings are "A. 7", "B. 11", "C. 16", "D. 8"
-- This method is known by the unfortunate term "teacher forcing"
-- This method is the most reliable, but the caveat is that it takes 4x longer than the log-probability approach in method 2 (since we feed the model all 4 answer variants)
+- Em vez de consultar a log-prob de cada uma das letras A/B/C/D, uma pontuação mais robusta (especialmente para modelos de raciocínio) é alimentar a letra junto com a string completa da resposta
+- No nosso exemplo, as strings de resposta são "A. 7", "B. 11", "C. 16", "D. 8"
+- Este método é conhecido pelo termo infeliz "teacher forcing"
+- Este método é o mais confiável, mas a ressalva é que leva 4x mais tempo que a abordagem por log-probabilidade do método 2 (já que alimentamos o modelo com todas as 4 variantes de resposta)
 
 <br>
 
@@ -183,53 +183,53 @@ MMLU letter accuracy (teacher-forced): 78/270 = 28.89% in 68.8s
 
 
 
-## Random guessing baseline
+## Baseline de chute aleatório
 
-- This random guessing baseline is just to put the numbers above into perspective
-  
-- A model that guesses randomly with uniform (equal) probability across all answers is expected to achieve $25\%$ accuracy
-  
-- However, for a random guesser, we can expect deviations from the $25\%$ (depending on the sample size)
+- Este baseline de chute aleatório serve apenas para colocar os números acima em perspectiva
 
-- For instance, we can model one evaluation run as a binomial with $K$ correct out of $n$ questions:
+- Espera-se que um modelo que chuta aleatoriamente, com probabilidade uniforme (igual) entre todas as respostas, alcance $25\%$ de acurácia
 
-  - $K \sim \mathrm{Binomial}(n,p)$ with $p=\tfrac14$ and $n=$ number of questions.  
-  - Accuracy $A = K/n$.
+- No entanto, para quem chuta aleatoriamente, podemos esperar desvios em relação aos $25\%$ (dependendo do tamanho da amostra)
 
-- Let's walk through this for the *high_school_mathematics* subset with $n=270$
+- Por exemplo, podemos modelar uma rodada de avaliação como uma binomial com $K$ acertos em $n$ questões:
 
-- In general, the properties of the binomial are:
+  - $K \sim \mathrm{Binomial}(n,p)$ com $p=\tfrac14$ e $n=$ número de questões.
+  - Acurácia $A = K/n$.
 
-  - Mean: $\mathbb{E}[K] = np$
-  - SD: $\sigma_K = \sqrt{np(1-p)}$
+- Vamos percorrer isso para o subconjunto *high_school_mathematics*, com $n=270$
 
-- For accuracy $A=K/n$:
+- Em geral, as propriedades da binomial são:
 
-  - Mean: $\mathbb{E}[A] = p = 0.25$
-  - SD: $\sigma_A = \sqrt{\tfrac{p(1-p)}{n}}$
+  - Média: $\mathbb{E}[K] = np$
+  - Desvio padrão: $\sigma_K = \sqrt{np(1-p)}$
 
-- Plugging in $n=270$:
+- Para a acurácia $A=K/n$:
 
-  - $\mathbb{E}[A] = 25\%$  
+  - Média: $\mathbb{E}[A] = p = 0.25$
+  - Desvio padrão: $\sigma_A = \sqrt{\tfrac{p(1-p)}{n}}$
+
+- Substituindo $n=270$:
+
+  - $\mathbb{E}[A] = 25\%$
   - $\sigma_A = \sqrt{\tfrac{0.25\cdot 0.75}{270}} \approx 2.64\%$
 
-- Convert the one standard deviation ($\pm 1\sigma$) accuracy bounds to counts:
+- Convertendo os limites de acurácia de um desvio padrão ($\pm 1\sigma$) em contagens:
 
-  - Lower: $K \le \lfloor 270\,(0.25-0.02636)\rfloor = 60$
-  - Upper: $K \ge \lceil 270\,(0.25+0.02636)\rceil = 75$
-  - (Inside the band is $K=61,\dots,74$; equivalently $A\in[22.36\%,\,27.64\%]$)
+  - Inferior: $K \le \lfloor 270\,(0.25-0.02636)\rfloor = 60$
+  - Superior: $K \ge \lceil 270\,(0.25+0.02636)\rceil = 75$
+  - (Dentro da faixa está $K=61,\dots,74$; equivalentemente $A\in[22.36\%,\,27.64\%]$)
 
-- So, the probability of falling outside this bound is:
+- Assim, a probabilidade de cair fora desse limite é:
 
   $$
   z = \pm\,\frac{75-67.5}{\sqrt{270\cdot 0.25\cdot 0.75}} \approx \pm 1.054, \qquad
   \Pr(|A-0.25|>0.02636) \approx 2\bigl(1-\Phi(1.054)\bigr) \approx 0.292.
   $$
 
-  So about 29.2% of random-guess runs are below 22.36% or above 27.64%
+  Ou seja, cerca de 29,2% das rodadas de chute aleatório ficam abaixo de 22,36% ou acima de 27,64%
 
-- This means in about $29.2\%$ of cases where the model is random guessing (assuming uniformly), we get an accuracy below $22.36\%$ or above $27.64\%$
-- Below is an empirical look:
+- Isso significa que, em cerca de $29,2\%$ dos casos em que o modelo está chutando aleatoriamente (assumindo distribuição uniforme), obtemos uma acurácia abaixo de $22,36\%$ ou acima de $27,64\%$
+- Abaixo, uma verificação empírica:
 
 
 ```bash
