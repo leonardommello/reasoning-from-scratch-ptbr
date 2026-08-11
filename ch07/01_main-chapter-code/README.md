@@ -1,7 +1,7 @@
-# Chapter 7: Improving GRPO for Reinforcement Learning
+# Capítulo 7: Melhorando GRPO para aprendizado por reforço
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [ch07_main.ipynb](ch07_main.ipynb): main chapter code
-- [ch07_exercise-solutions.ipynb](ch07_exercise-solutions.ipynb): exercise solutions
+- [ch07_main.ipynb](ch07_main.ipynb): código principal do capítulo
+- [ch07_exercise-solutions.ipynb](ch07_exercise-solutions.ipynb): soluções dos exercícios

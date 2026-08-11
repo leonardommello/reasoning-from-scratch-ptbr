@@ -1,7 +1,7 @@
-# Chapter 6: Training Reasoning Models with Reinforcement Learning
+# Capítulo 6: Treinando modelos de raciocínio com aprendizado por reforço
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [ch06_main.ipynb](ch06_main.ipynb): main chapter code
-- [ch06_exercise-solutions.ipynb](ch06_exercise-solutions.ipynb): exercise solutions
+- [ch06_main.ipynb](ch06_main.ipynb): código principal do capítulo
+- [ch06_exercise-solutions.ipynb](ch06_exercise-solutions.ipynb): soluções dos exercícios

@@ -1,7 +1,7 @@
-# Chapter 5: Inference-Time Scaling via Self-Refinement
+# Capítulo 5: Inference-time scaling via self-refinement
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [ch05_main.ipynb](ch05_main.ipynb): main chapter code
-- [ch05_exercise-solutions.ipynb](ch05_exercise-solutions.ipynb): exercise solutions
+- [ch05_main.ipynb](ch05_main.ipynb): código principal do capítulo
+- [ch05_exercise-solutions.ipynb](ch05_exercise-solutions.ipynb): soluções dos exercícios

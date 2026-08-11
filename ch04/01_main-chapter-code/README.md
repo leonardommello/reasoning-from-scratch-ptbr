@@ -1,7 +1,7 @@
-# Chapter 4: Improving Reasoning with Inference-Time Scaling
+# Capítulo 4: Melhorando o raciocínio com inference-time scaling
 
 &nbsp;
-## Main chapter code
+## Código principal do capítulo
 
-- [ch04_main.ipynb](ch04_main.ipynb): main chapter code
-- [ch04_exercise-solutions.ipynb](ch04_exercise-solutions.ipynb): exercise solutions
+- [ch04_main.ipynb](ch04_main.ipynb): código principal do capítulo
+- [ch04_exercise-solutions.ipynb](ch04_exercise-solutions.ipynb): soluções dos exercícios
