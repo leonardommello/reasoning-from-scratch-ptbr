@@ -1,50 +1,49 @@
 
 # LLM-as-a-judge
 
-This bonus material implements an LLM-as-a-judge approach, where gpt-oss:20b (via the open-source Ollama library) evaluates Qwen3 0.6B base and reasoning variants on MATH-500.
+Este material complementar implementa uma abordagem de LLM-as-a-judge, em que o gpt-oss:20b (via a biblioteca de código aberto Ollama) avalia as variantes base e de raciocínio do Qwen3 0.6B no MATH-500.
 
 <img src="https://sebastianraschka.com/images/reasoning-from-scratch-images/appendix-f/Appendix_F_F06_raschka.webp" width="500px">
 
 
 
 
-
-- Ollama is an open-source application to run LLMs efficiently
-- It is a wrapper around llama.cpp ([https://github.com/ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp)), which implements LLMs in pure C/C++ to maximize efficiency
-- Note that it is a to ol for using LLMs to generate text (inference), not training or finetuning LLMs
-- Before running the code below, install ollama by visiting [https://ollama.com](https://ollama.com) and following the instructions (for instance, clicking on the "Download" button and downloading the ollama application for your operating system)
-- For macOS and Windows users, click on the ollama application you downloaded; if it prompts you to install the command line usage, say "yes"
-- Linux users can use the installation command provided on the ollama website
-- There are 3 ways we can run ollama on our computer:
+- O ollama é uma aplicação de código aberto para rodar LLMs de forma eficiente
+- É um wrapper em torno do llama.cpp ([https://github.com/ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp)), que implementa LLMs em C/C++ puro para maximizar a eficiência
+- Note que é uma ferramenta para usar LLMs para gerar texto (inferência), não para treinar ou fazer fine-tuning de LLMs
+- Antes de rodar o código abaixo, instale o ollama visitando [https://ollama.com](https://ollama.com) e seguindo as instruções (por exemplo, clicando no botão "Download" e baixando a aplicação ollama para o seu sistema operacional)
+- Usuários de macOS e Windows: clique na aplicação ollama que você baixou; se ela perguntar se deseja instalar o uso por linha de comando, responda "yes"
+- Usuários de Linux podem usar o comando de instalação fornecido no site do ollama
+- Há 3 formas de rodar o ollama no nosso computador:
 
 
 
 **1. `ollama serve`**
 
-- This runs the ollama backend as a server, usually on `http://localhost:11434`. It doesn't load a model until we call it through the API. This is what we want if we want to use ollama through Python.
+- Isso roda o backend do ollama como um servidor, normalmente em `http://localhost:11434`. Ele não carrega um modelo até que o chamemos pela API. É isso que queremos se formos usar o ollama pelo Python.
 
 **2. `ollama run gpt-oss:20b`**
 
-- This is a convenience wrapper. If the server is not already running, it will start it, then download the model (the first time), and drop us into an interactive terminal where we can chat with the model. Behind the scenes, it uses the same server API.
+- Este é um wrapper de conveniência. Se o servidor ainda não estiver rodando, ele o inicia, então baixa o modelo (na primeira vez) e nos deixa em um terminal interativo onde podemos conversar com o modelo. Nos bastidores, ele usa a mesma API do servidor.
 
-**3. Ollama desktop app**
+**3. Aplicativo desktop do Ollama**
 
-- This runs the same backend automatically and provides a GUI on top of it (as shown in the figure above).
-It also applies defaults (system prompt, temperature, stop sequences), which can explain why answers look different from raw API usage.
-
-
-
-## Usage
+- Isso roda o mesmo backend automaticamente e fornece uma interface gráfica por cima dele (como mostrado na figura acima).
+Ele também aplica valores padrão (system prompt, temperature, stop sequences), o que pode explicar por que as respostas parecem diferentes do uso direto da API.
 
 
 
-The options and defaults are shown below. 
+## Uso
+
+
+
+As opções e os valores padrão são mostrados abaixo.
 
 <br>
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
@@ -87,7 +86,7 @@ options:
 
 
 
-**Base model**
+**Modelo base**
 
 ```bash
 ➜  uv run ollama-judge.py
@@ -114,7 +113,7 @@ Average score: 3.800 over 10 example(s)
 Counts: 1:2 2:0 3:2 4:0 5:6
 ```
 
-**Reasoning model**
+**Modelo de raciocínio**
 
 ```bash
 ➜  uv run ollama-judge.py --which_model reasoning
