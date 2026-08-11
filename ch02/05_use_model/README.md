@@ -1,4 +1,4 @@
-# Run Inference and Chat With the Model
+# Rodar inferência e conversar com o modelo
 
 &nbsp;
 
@@ -6,20 +6,20 @@
 
 &nbsp;
 
-This folder contains standalone example scripts to generate text with the model we loaded in chapter 2 (and exercises):
+Esta pasta contém scripts de exemplo autônomos para gerar texto com o modelo que carregamos no capítulo 2 (e nos exercícios):
 
-- `generate_simple.py`: Generates text similar to the main chapter.
-- `chat.py`: Similar to the code above, as an interactive wrapper so that we can prompt the model multiple times without having to reload the model into memory each time.
-- `chat_multiturn.py`: Same as above, but with a memory feature to remember the message history.
+- `generate_simple.py`: gera texto de forma parecida com o capítulo principal.
+- `chat.py`: parecido com o código acima, mas como um wrapper interativo, para podermos consultar o modelo várias vezes sem ter que recarregá-lo na memória a cada vez.
+- `chat_multiturn.py`: igual ao anterior, mas com um recurso de memória para lembrar o histórico de mensagens.
 
 
 
-More usage details are provided in the sections below.
+Mais detalhes de uso nas seções abaixo.
 
 &nbsp;
 ## generate_simple.py
 
-This simple function loads the model as described in chapter 2 and uses the `generate_text_simple_cache_stream` function from the chapter 2 exercises. You can use the function as follows (replace `uv run` with `python` if you are not using `uv`):
+Esta função simples carrega o modelo como descrito no capítulo 2 e usa a função `generate_text_simple_cache_stream` dos exercícios do capítulo 2. Você pode usar a função da seguinte forma (troque `uv run` por `python` se não estiver usando `uv`):
 
 ```bash
 uv run ch02/05_use_model/generate_simple.py
@@ -40,7 +40,7 @@ Time: 1.52 sec
 22 tokens/sec
 ```
 
-The function is useful if you want to quickly try out different prompts with the base or reasoning variant. The additional options are listed below:
+A função é útil se você quer testar rapidamente prompts diferentes com a variante base ou de raciocínio. As opções adicionais estão listadas abaixo:
 
 ```bash
 usage: generate_simple.py [-h] [--device DEVICE]
@@ -68,9 +68,9 @@ options:
 &nbsp;
 ## chat.py
 
-Similar to the function above, this function is useful to try different prompts on the base and reasoning models. 
+Parecida com a função acima, esta função é útil para testar prompts diferentes nos modelos base e de raciocínio.
 
-However, in contrast to the previous function, this function keeps the user in an interactive mode so that the model doesn't have to be reloaded each time:
+No entanto, diferente da função anterior, esta mantém a pessoa em um modo interativo, para que o modelo não precise ser recarregado a cada vez:
 
 ```bash
 uv run ch02/05_use_model/chat.py        
@@ -117,7 +117,7 @@ Time: 1.04 sec
 ------------------------------------------------------------
 ```
 
-Additional options are listed below:
+Opções adicionais estão listadas abaixo:
 
 ```bash
 usage: chat.py [-h] [--device DEVICE] [--max_new_tokens MAX_NEW_TOKENS] [--compile]
@@ -141,7 +141,7 @@ options:
 
 ## chat_multiturn.py
 
-This function is similar to the one above, except it adds a multi-turn memory so that the LLM remembers the conversation from the past turns. It is highly recommended to use the reasoning variant here as the base model struggles with conversations:
+Esta função é parecida com a anterior, exceto que acrescenta uma memória de múltiplos turnos, para que o LLM lembre da conversa dos turnos anteriores. É altamente recomendável usar a variante de raciocínio aqui, já que o modelo base tem dificuldade com conversas:
 
 
 
@@ -204,7 +204,7 @@ Time: 5.21 sec
 
 
 
-Additional options are listed below:
+Opções adicionais estão listadas abaixo:
 
 ```bash
 usage: chat_multiturn.py [-h] [--device DEVICE] [--max_new_tokens MAX_NEW_TOKENS]
