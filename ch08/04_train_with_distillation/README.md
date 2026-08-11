@@ -1,37 +1,37 @@
-# Chapter 8 Bonus Material: Train with Distillation
+# Material complementar do capítulo 8: treinar com destilação
 
-This folder contains a simple distillation script for training the Qwen3 0.6B model on teacher-generated reasoning traces, as covered in chapter 8.
+Esta pasta contém um script simples de destilação para treinar o modelo Qwen3 0.6B com traços de raciocínio gerados por um professor, como abordado no capítulo 8.
 
 &nbsp;
-## Files
+## Arquivos
 
-- [distill.py](distill.py): Trains Qwen3 0.6B on JSON-formatted distillation data (more on the format in the next section).
-  - By default, it trains the base model with the base tokenizer
-  - If you pass `--use_think_tokens`, it uses the reasoning tokenizer and wraps the reasoning trace as `<think>...</think>` before the final answer similar to how it's done in chapter 8
-  - After each epoch, it saves a checkpoint to `checkpoints/distill/` and appends training metrics to `logs/distill_metrics.csv`
-  - If you initialize from `--checkpoint_path` (optional) instead of the base model, you can continue an already existing checkpoint
-- [distill_batched.py](distill_batched.py): Batched version of the script above.
-  - It uses the padding-aware batched Qwen3 implementation so examples of different lengths can be trained together
-  - It adds a `--batch_size` argument to process multiple examples per optimization step
-  - It saves checkpoints to `checkpoints/distill_batched/` and appends metrics to `logs/distill_batched_metrics.csv`
-  - Of course, note that the batched variant uses much more GPU memory (depending on the batch size)
+- [distill.py](distill.py): treina o Qwen3 0.6B com dados de destilação em formato JSON (mais sobre o formato na próxima seção).
+  - Por padrão, treina o modelo base com o tokenizer base
+  - Se você passar `--use_think_tokens`, ele usa o tokenizer de raciocínio e envolve o traço de raciocínio como `<think>...</think>` antes da resposta final, de forma parecida com o que é feito no capítulo 8
+  - Após cada epoch, salva um checkpoint em `checkpoints/distill/` e acrescenta métricas de treinamento em `logs/distill_metrics.csv`
+  - Se você inicializar a partir de `--checkpoint_path` (opcional), em vez do modelo base, pode continuar um checkpoint já existente
+- [distill_batched.py](distill_batched.py): versão em batch do script acima.
+  - Usa a implementação do Qwen3 em batch com suporte a padding, para que exemplos de comprimentos diferentes possam ser treinados juntos
+  - Acrescenta um argumento `--batch_size`, para processar vários exemplos por step de otimização
+  - Salva checkpoints em `checkpoints/distill_batched/` e acrescenta métricas em `logs/distill_batched_metrics.csv`
+  - Naturalmente, note que a variante em batch usa bem mais memória de GPU (dependendo do batch size)
 
-The script imports shared functionality from the [`reasoning_from_scratch`](../../reasoning_from_scratch) package to avoid duplicating the model-loading and prompt-formatting code. (See [chapter 2 setup instructions](../../ch02/02_setup-tips/python-instructions.md) for installation details.)
+O script importa funcionalidades compartilhadas do pacote [`reasoning_from_scratch`](../../reasoning_from_scratch) para evitar duplicar o código de carregamento do modelo e de formatação de prompt. (Veja as [instruções de configuração do capítulo 2](../../ch02/02_setup-tips/python-instructions.md) para detalhes de instalação.)
 
 
 <br>
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**Nota**: se você não usa `uv`, troque `uv run ...py` por `python ...py` nos exemplos abaixo.
 
 ---
 
 
 &nbsp;
-## Input data format
+## Formato dos dados de entrada
 
-The input is the JSON output produced by [`../02_generate_distillation_data`](../02_generate_distillation_data). Each row should look like this:
+A entrada é a saída JSON produzida por [`../02_generate_distillation_data`](../02_generate_distillation_data). Cada linha deve ser assim:
 
 ```json
 {
@@ -42,19 +42,19 @@ The input is the JSON output produced by [`../02_generate_distillation_data`](..
 }
 ```
 
-For training, only the following fields are used:
+Para o treinamento, apenas os seguintes campos são usados:
 
-- `problem`: inserted into the same math prompt template used in chapter 3
-- `message_content`: required; used as the supervised target answer
-- `message_thinking`: optional; if present, it is prepended before `message_content`
+- `problem`: inserido no mesmo template de prompt de matemática usado no capítulo 3
+- `message_content`: obrigatório; usado como resposta-alvo supervisionada
+- `message_thinking`: opcional; se presente, é colocado antes de `message_content`
 
-Rows with missing or malformed fields are skipped automatically, and examples longer than `--max_seq_len` are filtered out before the train/validation split.
+Linhas com campos ausentes ou malformados são puladas automaticamente, e exemplos mais longos que `--max_seq_len` são filtrados antes da divisão entre treinamento e validação.
 
 
 &nbsp;
-## Example run
+## Exemplo de execução
 
-For a quick sanity check, you can train on a small sample generated in the previous folder:
+Para uma verificação rápida de sanidade, você pode treinar com uma pequena amostra gerada na pasta anterior:
 
 ```bash
 uv run distill.py \
@@ -65,15 +65,15 @@ uv run distill.py \
   --log_every 1
 ```
 
-This will:
+Isso vai:
 
-- load the base Qwen3 0.6B weights
-- tokenize the prompt/answer pairs
-- reserve 1 example for validation
-- save a checkpoint after each epoch in `checkpoints/distill/`
-- write CSV metrics to `logs/distill_metrics.csv`
+- carregar os pesos base do Qwen3 0.6B
+- tokenizar os pares de prompt/resposta
+- reservar 1 exemplo para validação
+- salvar um checkpoint após cada epoch em `checkpoints/distill/`
+- escrever métricas em CSV em `logs/distill_metrics.csv`
 
-If you want to train with explicit reasoning tags and the reasoning tokenizer instead, add `--use_think_tokens`:
+Se você quiser treinar com tags de raciocínio explícitas e o tokenizer de raciocínio, adicione `--use_think_tokens`:
 
 ```bash
 uv run distill.py \
@@ -85,7 +85,7 @@ uv run distill.py \
   --use_think_tokens
 ```
 
-If you want to train in batches instead, run:
+Se você quiser treinar em batches, rode:
 
 ```bash
 uv run distill_batched.py \
@@ -99,34 +99,34 @@ uv run distill_batched.py \
 
 
 &nbsp;
-## Useful options
+## Opções úteis
 
 ```bash
 uv run distill.py --help
 ```
 
-Important arguments:
+Argumentos importantes:
 
-- `--data_path`: path to the distillation JSON file
-- `--dataset_size`: truncate the dataset before splitting (`0` uses all rows)
-- `--validation_size`: absolute number of validation examples
-- `--epochs`: number of passes over the training split
-- `--batch_size`: number of examples per optimization step in `distill_batched.py`
-- `--lr`: AdamW learning rate
-- `--max_seq_len`: drops examples whose prompt + answer sequence is longer than this limit
-- `--checkpoint_path`: initialize from an earlier distillation checkpoint
-- `--grad_clip_norm`: optional gradient clipping
-- `--use_think_tokens`: switch to the reasoning tokenizer and `<think>...</think>` formatting
+- `--data_path`: caminho para o arquivo JSON de destilação
+- `--dataset_size`: trunca o dataset antes da divisão (`0` usa todas as linhas)
+- `--validation_size`: número absoluto de exemplos de validação
+- `--epochs`: número de passagens sobre a partição de treinamento
+- `--batch_size`: número de exemplos por step de otimização no `distill_batched.py`
+- `--lr`: learning rate do AdamW
+- `--max_seq_len`: descarta exemplos cuja sequência de prompt + resposta seja maior que este limite
+- `--checkpoint_path`: inicializa a partir de um checkpoint de destilação anterior
+- `--grad_clip_norm`: clipping de gradiente opcional
+- `--use_think_tokens`: troca para o tokenizer de raciocínio e a formatação `<think>...</think>`
 
-See the "Experiments" section below for hands-on examples.
+Veja a seção "Experimentos" abaixo para exemplos práticos.
 
 &nbsp;
 
-## Evaluating a distilled checkpoint
+## Avaliando um checkpoint destilado
 
-After training, you can evaluate a checkpoint on MATH-500 using the chapter 3 evaluation script.
+Depois do treinamento, você pode avaliar um checkpoint no MATH-500 usando o script de avaliação do capítulo 3.
 
-If you trained without `--use_think_tokens`, evaluate it as a `base` model:
+Se você treinou sem `--use_think_tokens`, avalie-o como um modelo `base`:
 
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
@@ -135,7 +135,7 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
   --checkpoint_path checkpoints/distill/qwen3-0.6B-distill-step00004-epoch1.pth
 ```
 
-**Important:** If you trained with `--use_think_tokens`, evaluate it as a `reasoning` model so the reasoning tokenizer is used:
+**Importante:** se você treinou com `--use_think_tokens`, avalie-o como um modelo `reasoning`, para que o tokenizer de raciocínio seja usado:
 
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
@@ -146,9 +146,9 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 
 
 &nbsp;
-## Experiments
+## Experimentos
 
-The distillation datasets used in chapter 8 are available from my Hugging Face repo at [rasbt/math_distill](https://huggingface.co/datasets/rasbt/math_distill). In chapter 8, they are loaded via a helper that downloads partitions, e.g.,
+Os datasets de destilação usados no capítulo 8 estão disponíveis no meu repositório do Hugging Face, em [rasbt/math_distill](https://huggingface.co/datasets/rasbt/math_distill). No capítulo 8, eles são carregados por uma função auxiliar que baixa as partições, por exemplo:
 
 ````python
 from reasoning_from_scratch.ch08 import load_distill_data
@@ -165,28 +165,28 @@ _ = load_distill_data(
 
 
 
-For the experiments below, I used the `deepseek-r1-math-train.json` and `qwen3-235b-a22b-math-train.json` files from that dataset collection.
+Para os experimentos abaixo, usei os arquivos `deepseek-r1-math-train.json` e `qwen3-235b-a22b-math-train.json` dessa coleção de datasets.
 
 
 &nbsp;
 
-|      | Teacher data                         | Epoch | MATH-500 Acc | Final val loss |
+|      | Dados do professor                   | Epoch | Acurácia MATH-500 | Val loss final |
 | ---- | ------------------------------------ | ----- | ------------ | -------------- |
-| 1    | Base (chapter 3)                     | -     | 15.2%        | -              |
-| 2    | Reasoning (chapter 3)                | -     | 48.2%        | -              |
-| 3    | DeepSeek R1 distillation data        | 1     | 30.6%        | 0.5436         |
-| 4    | DeepSeek R1 distillation data        | 2     | 32.4%        | 0.5349         |
-| 5    | DeepSeek R1 distillation data        | 3     | 33.6%        | 0.5343         |
-| 6    | Qwen3 235B A22B distillation data    | 1     | 45.0%        | 0.4043         |
-| 7    | Qwen3 235B A22B distillation data    | 2     | 43.8%        | 0.3963         |
-| 8    | Qwen3 235B A22B distillation data    | 3     | 44.2%        | 0.3948         |
+| 1    | Base (capítulo 3)                    | -     | 15,2%        | -              |
+| 2    | Reasoning (capítulo 3)               | -     | 48,2%        | -              |
+| 3    | Dados de destilação do DeepSeek R1   | 1     | 30,6%        | 0,5436         |
+| 4    | Dados de destilação do DeepSeek R1   | 2     | 32,4%        | 0,5349         |
+| 5    | Dados de destilação do DeepSeek R1   | 3     | 33,6%        | 0,5343         |
+| 6    | Dados de destilação do Qwen3 235B A22B | 1   | 45,0%        | 0,4043         |
+| 7    | Dados de destilação do Qwen3 235B A22B | 2   | 43,8%        | 0,3963         |
+| 8    | Dados de destilação do Qwen3 235B A22B | 3   | 44,2%        | 0,3948         |
 
-The training takes about 30 min on an H100 and about 3 hours on a DGX Spark and uses up to 15 GB RAM.
+O treinamento leva cerca de 30 min em uma H100 e cerca de 3 horas em um DGX Spark, e usa até 15 GB de RAM.
 
-Below are the code snippets to reproduce the results reported in the table.
+Abaixo estão os trechos de código para reproduzir os resultados reportados na tabela.
 
 &nbsp;
-**Row 1**
+**Linha 1**
 
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
@@ -195,7 +195,7 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 ```
 
 &nbsp;
-**Row 2**
+**Linha 2**
 
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
@@ -204,7 +204,7 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 ```
 
 &nbsp;
-**Rows 3, 4, & 5**
+**Linhas 3, 4 e 5**
 
 ```bash
 uv run distill.py \
@@ -217,7 +217,7 @@ uv run distill.py \
 --grad_clip 1.0
 ```
 
-Then, to evaluate the epoch checkpoints, run:
+Depois, para avaliar os checkpoints de cada epoch, rode:
 
 &nbsp;
 ```bash
@@ -228,10 +228,10 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --checkpoint_path run-1/checkpoints/distill/qwen3-0.6B-distill-step06682-epoch1.pth
 ```
 
-For row 4 and row 5, replace the checkpoint path with `...step13364-epoch2.pth` and `...step20046-epoch3.pth`, respectively.
+Para as linhas 4 e 5, troque o caminho do checkpoint por `...step13364-epoch2.pth` e `...step20046-epoch3.pth`, respectivamente.
 
 &nbsp;
-**Rows 6, 7, & 8**
+**Linhas 6, 7 e 8**
 
 ```bash
 uv run distill.py \
@@ -244,7 +244,7 @@ uv run distill.py \
 --grad_clip 1.0
 ```
 
-Then, to evaluate the epoch checkpoints, run:
+Depois, para avaliar os checkpoints de cada epoch, rode:
 
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
@@ -254,4 +254,4 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --checkpoint_path run_11/checkpoints/distill/qwen3-0.6B-distill-step05746-epoch1.pth
 ```
 
-For row 7 and row 8, replace the checkpoint path with `...step11492-epoch2.pth` and `...step17238-epoch3.pth`, respectively.
+Para as linhas 7 e 8, troque o caminho do checkpoint por `...step11492-epoch2.pth` e `...step17238-epoch3.pth`, respectivamente.
